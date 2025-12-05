@@ -1,0 +1,1 @@
+Sort the fasta file by scaffold size then, based on octDeg2, rename into chr1, chr2, chr3 ...chr28, chrX/Y, seq31..... seqX, where X is the number of total sequence entry in scaffolded assembly. 

@@ -1,0 +1,1 @@
+Use AGAT to annotated the braker3 predicted gene loci with uniprot and interproscan annotation results.
