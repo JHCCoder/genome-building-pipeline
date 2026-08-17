@@ -1,0 +1,128 @@
+VERIFICATION OF CONTAMINATION-REMOVAL TIMING COMPARISON
+(Octodon degus assembly - hifiasm-041425 lineage)
+Compiled 2026-08-11
+======================================================================
+
+QUESTION
+----------------------------------------------------------------------
+Did performing contamination removal BEFORE genome scaffolding
+(hifiasm-041425-assembly-mitoFiltered-contamFiltered/) substantially
+change what needed to be filtered out at the end (the final
+contamFiltered assembly)?
+
+METHOD
+----------------------------------------------------------------------
+Used the early FCS screen report (contamination_action.txt, run via the
+Galaxy fcs-gx workflow on the mitoFiltered assembly, before scaffolding)
+and traced each flagged contig into the scaffolded assembly using the
+HapHiC AGP file
+(output/.../references_hifiasm_male403_hifiHiCMode_041425_trail1_allChrom/04.build/out_JBAT_review_with_orig_name.agp).
+Cross-checked against the 88 sequences removed in the final assembly
+(pre/post comparison of the chrAssigned vs contamFiltered fasta .fai).
+
+VERIFIED FINDINGS
+----------------------------------------------------------------------
+1) The early-screen report is identical to the one used in this
+   comparison (contamination_action.txt == fcs_gx.contam.action_report.txt,
+   same md5).
+
+2) The early FCS screen flagged 90 contigs total:
+     89 EXCLUDE (88 prokaryotic + 1 marsupial)
+      1 REVIEW  (S. aureus, coverage 16)
+   Taxonomic breakdown of all 90:
+     51 Firmicutes, 32 Gammaproteobacteria, 6 Spirochaetes,
+      1 Marsupial (Monodelphis domestica)
+
+3) ZERO of the 90 flagged contigs were incorporated into any of the
+   30 chromosome scaffolds (PGA_scaffold_1-30). All 90 remained as
+   unplaced, single-contig scaffolds (PGA_scaffold_31-288).
+   -> Hi-C scaffolding left bacterial contigs unplaced (no Hi-C signal).
+
+4) The 88 sequences removed at the END (chrNameAssigned ->
+   contamFiltered) are EXACTLY the 88 prokaryotic contamination contigs
+   from the early screen (length-matched 1:1).
+
+5) The 2 early-flagged contigs NOT removed at the end:
+     - ptg000355l (58,210 bp; EXCLUDE; anml:marsupials / opossum)
+       -> kept as seq121; distant-mammal hit, treated as false positive
+     - ptg000471l (7,200 bp; REVIEW; Firmicutes / S. aureus, cov=16)
+       -> kept as seq281; review-confidence only
+
+6) ptg000006l (the fcs-ADAPTER candidate, NOT a contamination flag) is
+   genuinely part of chr15 (PGA_scaffold_15), but was verified as an
+   adapter FALSE POSITIVE (see mitoFiltered-contamFiltered/README), so
+   chr15 is legitimate and was not touched.
+
+CONCLUSION
+----------------------------------------------------------------------
+The comparison conclusion is CORRECT and holds up:
+Performing contamination removal before scaffolding would NOT have
+substantially changed what needed to be filtered. The contamination was
+never incorporated into chromosome scaffolds - it survived only as
+unplaced contigs - so the exact same 88 prokaryotic contigs were
+identified and removed regardless of timing. Early removal was
+functionally equivalent to late removal; the two "extra" early flags
+(a marsupial false positive and a review-level S. aureus hit) were
+reasonably retained in the final assembly.
+
+NOTE ON THE NOTEBOOKS
+----------------------------------------------------------------------
+check_contam.ipynb is clean and correct ("no contamination within the
+largest 30 chromosomes").
+check_adapter.ipynb has stale/mixed saved cell outputs (value_counts
+shows 89 True while the final isin() filter shows only ptg000006l -
+these come from different runs; the ptg000006l output is from a run
+where contam was set to ["ptg000006l"]). The intended logic is correct
+but the saved outputs do not tell the story cleanly. Recommend re-running
+it before citing in the paper.
+
+======================================================================
+ADAPTER HIT - WHY IT WAS DETERMINED A FALSE POSITIVE (NOT A TANDEM REPEAT)
+======================================================================
+
+The only adapter hit in the whole screen (adaptor_report.txt, one line):
+  ptg000006l:27178127-27178151 (25 bp), action ACTION_TRIM,
+  name = Illumina TruSeq DNA HT and RNA HT i7 index D705 adapter
+  sequence extracted = ATACGAGATTTCTGAATGTGACTGG
+
+WHY FCS-ADAPTOR FLAGGED IT (the match is essentially EXACT)
+----------------------------------------------------------------------
+The 25-mer is a composite of the TruSeq D705 i7 index adapter:
+  ATACGAGAT  = 3' end of the i7 index primer CAAGCAGAAGACGGCATACGAGAT
+  TTCTGAAT   = reverse complement of the D705 index (ATTCAGAA)
+  GTGACTGG   = start of the P7 tail GTGACTGGAGTTCAGACGTGTGCTCTTCCGATCT
+So it genuinely looks like a D705 adapter molecule - a strong k-mer hit.
+
+WHY IT IS STILL A FALSE POSITIVE (genuine coding DNA)
+----------------------------------------------------------------------
+Mapped the hit through the AGP into the final assembly: it sits at
+chr13:117,652,310-117,652,334, INSIDE exon 4 / CDS of the Irf4 gene
+(interferon regulatory factor 4; gene chr13:117,641,016-117,655,169).
+  - exon/CDS chr13:117,652,249-117,652,393 contains the 25 bp
+    (~61 bp into the exon)
+  - Irf4 model: valid_ORF=True, matches_ref_protein=True
+    (XP_004628470.1), RNA-seq support for all introns
+An internal, RNA-expressed protein-coding exon cannot be library
+contamination; trimming would have destroyed part of Irf4.
+
+NOT RELATED TO A TANDEM REPEAT (tested directly)
+----------------------------------------------------------------------
+- No simple tandem repeat (period 1-6) overlaps the hit
+- No long-period tandem repeat (period 7-250) overlaps the hit
+- Region is NOT soft-masked by RepeatMasker (0/301 bases lowercase)
+- The 25-mer is unique within +/-10 kb
+The coincidence is a known phenomenon: short adapter junctions
+(primer + index + tail) can occur by chance in genomes; k-mer-based
+adapter screens flag them and manual review is required.
+
+HOW THE DETERMINATION WAS DOCUMENTED
+----------------------------------------------------------------------
+mitoFiltered-contamFiltered/README:
+  "samtools faidx adaptor_trimmed.fasta 'lcl|ptg000006l:27178127-27178151'
+   > adapter_identified.fa
+   We extracted out the potential illumina adaptor sequence and
+   determined that it is likely a false positive hit. No adaptor trim
+   needed."
+(Confirmed: fcs-gx / fcs-adaptor were run via the Galaxy portal;
+ see toolshed/fcs-gx/README and contaminations/README.)
+======================================================================

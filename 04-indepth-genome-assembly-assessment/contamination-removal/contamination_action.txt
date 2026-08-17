@@ -1,0 +1,92 @@
+##[["FCS genome report", 2, 1], {"git-rev": "v0.5.5-9-gfc836c1", "run-date": "Thu Apr 30 18:34:23 2026", "db": {"build-date": "2023-01-24", "seqs": 3025824, "Gbp": 709.264}, "run-info": {"agg-cvg": 0.698427, "asserted-div": "unkn:unknown", "inferred-primary-divs": ["anml:rodents", "anml:mammals", "anml:primates"], "corrected-primary-divs": ["anml:rodents", "anml:mammals", "anml:primates"], "species": "Octodon degus", "genome-hash": "a95b47bb9f3e2bd5"}}]
+#seq_id	start_pos	end_pos	seq_len	action	div	agg_cont_cov	top_tax_name
+lcl|ptg000355l	1	58210	58210	EXCLUDE	anml:marsupials	50	Monodelphis domestica
+lcl|ptg000374l	1	128056	128056	EXCLUDE	prok:firmicutes	76	Atopostipes suicloacalis
+lcl|ptg000375l	1	384888	384888	EXCLUDE	prok:firmicutes	93	Atopostipes suicloacalis
+lcl|ptg000377l	1	13139	13139	EXCLUDE	prok:g-proteobacteria	100	Psychrobacter sp. UBA2071
+lcl|ptg000378l	1	31351	31351	EXCLUDE	prok:firmicutes	76	Atopostipes suicloacalis
+lcl|ptg000379l	1	432515	432515	EXCLUDE	prok:firmicutes	83	Atopostipes suicloacalis
+lcl|ptg000380l	1	47751	47751	EXCLUDE	prok:firmicutes	94	Atopostipes suicloacalis
+lcl|ptg000381l	1	22621	22621	EXCLUDE	prok:g-proteobacteria	100	Psychrobacter sp. UBA6291
+lcl|ptg000382l	1	46298	46298	EXCLUDE	prok:g-proteobacteria	100	Psychrobacter sp. UBA6291
+lcl|ptg000383l	1	98945	98945	EXCLUDE	prok:firmicutes	93	Atopostipes suicloacalis
+lcl|ptg000384l	1	10133	10133	EXCLUDE	prok:firmicutes	92	Ruoffia tabacinasalis
+lcl|ptg000385l	1	111893	111893	EXCLUDE	prok:firmicutes	92	Atopostipes suicloacalis
+lcl|ptg000386l	1	10981	10981	EXCLUDE	prok:firmicutes	97	Atopostipes suicloacalis
+lcl|ptg000387l	1	15798	15798	EXCLUDE	prok:firmicutes	100	Ruoffia tabacinasalis
+lcl|ptg000388l	1	66007	66007	EXCLUDE	prok:firmicutes	77	Atopostipes suicloacalis
+lcl|ptg000389l	1	44290	44290	EXCLUDE	prok:firmicutes	67	Atopostipes suicloacalis
+lcl|ptg000395l	1	16979	16979	EXCLUDE	prok:g-proteobacteria	100	Psychrobacter sp. UBA6291
+lcl|ptg000396l	1	13526	13526	EXCLUDE	prok:g-proteobacteria	100	Psychrobacter sp. UBA6291
+lcl|ptg000397l	1	27766	27766	EXCLUDE	prok:firmicutes	82	Ruoffia halotolerans
+lcl|ptg000398l	1	81582	81582	EXCLUDE	prok:firmicutes	85	Atopostipes suicloacalis
+lcl|ptg000399l	1	12410	12410	EXCLUDE	prok:firmicutes	100	Ruoffia tabacinasalis
+lcl|ptg000400l	1	8066	8066	EXCLUDE	prok:g-proteobacteria	98	Psychrobacter sp. UBA6291
+lcl|ptg000402l	1	11121	11121	EXCLUDE	prok:firmicutes	100	Ruoffia tabacinasalis
+lcl|ptg000403l	1	17604	17604	EXCLUDE	prok:firmicutes	92	Aerococcus viridans
+lcl|ptg000404l	1	147284	147284	EXCLUDE	prok:firmicutes	75	Atopostipes suicloacalis
+lcl|ptg000405l	1	18104	18104	EXCLUDE	prok:firmicutes	100	Jeotgalicoccus psychrophilus
+lcl|ptg000406l	1	197157	197157	EXCLUDE	prok:firmicutes	75	Vagococcus carniphilus
+lcl|ptg000407l	1	70767	70767	EXCLUDE	prok:firmicutes	86	Atopostipes suicloacalis
+lcl|ptg000408l	1	11657	11657	EXCLUDE	prok:g-proteobacteria	100	Psychrobacter sp. UBA2071
+lcl|ptg000409l	1	38354	38354	EXCLUDE	prok:firmicutes	59	Atopostipes suicloacalis
+lcl|ptg000411l	1	171589	171589	EXCLUDE	prok:firmicutes	83	Atopostipes suicloacalis
+lcl|ptg000412l	1	15204	15204	EXCLUDE	prok:g-proteobacteria	67	Alkalimarinus sediminis
+lcl|ptg000413l	1	40170	40170	EXCLUDE	prok:spirochetes	20	Borreliella americana
+lcl|ptg000414l	1	45828	45828	EXCLUDE	prok:firmicutes	90	Aerococcus viridans
+lcl|ptg000417l	1	9844	9844	EXCLUDE	prok:firmicutes	80	Atopostipes suicloacalis
+lcl|ptg000418l	1	18426	18426	EXCLUDE	prok:g-proteobacteria	100	Psychrobacter faecalis
+lcl|ptg000419l	1	9444	9444	EXCLUDE	prok:firmicutes	100	Ruoffia tabacinasalis
+lcl|ptg000420l	1	13103	13103	EXCLUDE	prok:spirochetes	57	Borrelia coriaceae
+lcl|ptg000421l	1	18735	18735	EXCLUDE	prok:firmicutes	100	Ruoffia tabacinasalis
+lcl|ptg000423l	1	21440	21440	EXCLUDE	prok:g-proteobacteria	100	Psychrobacter sp. UBA6291
+lcl|ptg000424l	1	34821	34821	EXCLUDE	prok:firmicutes	48	Ruoffia tabacinasalis
+lcl|ptg000425l	1	24092	24092	EXCLUDE	prok:g-proteobacteria	100	Psychrobacter sp. UBA6291
+lcl|ptg000426l	1	12803	12803	EXCLUDE	prok:firmicutes	100	Jeotgalicoccus nanhaiensis
+lcl|ptg000427l	1	9272	9272	EXCLUDE	prok:firmicutes	84	Jeotgalibaca ciconiae
+lcl|ptg000429l	1	16785	16785	EXCLUDE	prok:g-proteobacteria	100	Psychrobacter sp. UBA6291
+lcl|ptg000430l	1	16084	16084	EXCLUDE	prok:firmicutes	100	Enterococcus hirae
+lcl|ptg000431l	1	41463	41463	EXCLUDE	prok:firmicutes	93	Ruoffia tabacinasalis
+lcl|ptg000433l	1	22064	22064	EXCLUDE	prok:g-proteobacteria	100	Psychrobacter sp. UBA6291
+lcl|ptg000434l	1	12294	12294	EXCLUDE	prok:firmicutes	41	Atopostipes suicloacalis
+lcl|ptg000435l	1	11609	11609	EXCLUDE	prok:firmicutes	100	Jeotgalicoccus sp.
+lcl|ptg000437l	1	17492	17492	EXCLUDE	prok:g-proteobacteria	100	Psychrobacter faecalis
+lcl|ptg000438l	1	15208	15208	EXCLUDE	prok:g-proteobacteria	100	Psychrobacter sp. UBA6291
+lcl|ptg000439l	1	14365	14365	EXCLUDE	prok:g-proteobacteria	100	Psychrobacter sp. UBA2071
+lcl|ptg000441l	1	20215	20215	EXCLUDE	prok:firmicutes	100	Ruoffia tabacinasalis
+lcl|ptg000442l	1	40577	40577	EXCLUDE	prok:firmicutes	97	Atopostipes suicloacalis
+lcl|ptg000443l	1	12852	12852	EXCLUDE	prok:g-proteobacteria	100	Psychrobacter sp. UBA2071
+lcl|ptg000444l	1	10131	10131	EXCLUDE	prok:firmicutes	100	Jeotgalicoccus halotolerans
+lcl|ptg000446l	1	11290	11290	EXCLUDE	prok:firmicutes	100	Aerococcus urinaeequi
+lcl|ptg000447l	1	11759	11759	EXCLUDE	prok:firmicutes	87	Fundicoccus ignavus
+lcl|ptg000448l	1	9172	9172	EXCLUDE	prok:g-proteobacteria	100	Psychrobacter faecalis
+lcl|ptg000449l	1	17692	17692	EXCLUDE	prok:g-proteobacteria	100	Psychrobacter sp. UBA6291
+lcl|ptg000450l	1	10182	10182	EXCLUDE	prok:g-proteobacteria	100	Psychrobacter sp. UBA6291
+lcl|ptg000452l	1	11055	11055	EXCLUDE	prok:firmicutes	100	Ruoffia tabacinasalis
+lcl|ptg000453l	1	8244	8244	EXCLUDE	prok:firmicutes	98	Enterococcus hirae
+lcl|ptg000454l	1	15186	15186	EXCLUDE	prok:g-proteobacteria	100	Psychrobacter faecalis
+lcl|ptg000457l	1	17871	17871	EXCLUDE	prok:firmicutes	100	Alkalibacterium thalassium
+lcl|ptg000458l	1	11856	11856	EXCLUDE	prok:g-proteobacteria	100	Psychrobacter sp. UBA2071
+lcl|ptg000459l	1	15473	15473	EXCLUDE	prok:firmicutes	100	Ruoffia tabacinasalis
+lcl|ptg000461l	1	19530	19530	EXCLUDE	prok:firmicutes	96	Vaginisenegalia massiliensis
+lcl|ptg000462l	1	10903	10903	EXCLUDE	prok:g-proteobacteria	100	Psychrobacter sp. UBA2071
+lcl|ptg000464l	1	11572	11572	EXCLUDE	prok:g-proteobacteria	100	Psychrobacter sp. UBA2071
+lcl|ptg000466l	1	31645	31645	EXCLUDE	prok:firmicutes	100	Jeotgalicoccus nanhaiensis
+lcl|ptg000467l	1	16138	16138	EXCLUDE	prok:g-proteobacteria	100	Psychrobacter sp. UBA6291
+lcl|ptg000468l	1	10796	10796	EXCLUDE	prok:firmicutes	100	Jeotgalicoccus nanhaiensis
+lcl|ptg000469l	1	11565	11565	EXCLUDE	prok:g-proteobacteria	100	Psychrobacter sp. UBA2071
+lcl|ptg000470l	1	7995	7995	EXCLUDE	prok:spirochetes	100	Borrelia miyamotoi
+lcl|ptg000471l	1	7200	7200	REVIEW	prok:firmicutes	16	Staphylococcus aureus subsp. aureus ST398
+lcl|ptg000472l	1	8399	8399	EXCLUDE	prok:firmicutes	65	Ruoffia tabacinasalis
+lcl|ptg000473l	1	16436	16436	EXCLUDE	prok:firmicutes	100	Jeotgalicoccus coquinae
+lcl|ptg000474l	1	9147	9147	EXCLUDE	prok:spirochetes	53	Borrelia coriaceae
+lcl|ptg000476l	1	9506	9506	EXCLUDE	prok:spirochetes	100	Borrelia miyamotoi
+lcl|ptg000477l	1	13911	13911	EXCLUDE	prok:g-proteobacteria	100	Psychrobacter sp. UBA6291
+lcl|ptg000483l	1	10796	10796	EXCLUDE	prok:g-proteobacteria	100	Psychrobacter sp. UBA2071
+lcl|ptg000487l	1	7616	7616	EXCLUDE	prok:g-proteobacteria	100	Psychrobacter sp. UBA6291
+lcl|ptg000488l	1	45394	45394	EXCLUDE	prok:firmicutes	84	Atopostipes suicloacalis
+lcl|ptg000489l	1	13825	13825	EXCLUDE	prok:firmicutes	100	Jeotgalicoccus nanhaiensis
+lcl|ptg000490l	1	11289	11289	EXCLUDE	prok:g-proteobacteria	100	Psychrobacter sp. UBA2071
+lcl|ptg000491l	1	11021	11021	EXCLUDE	prok:g-proteobacteria	100	Psychrobacter sp. UBA2071
+lcl|ptg000492l	1	16553	16553	EXCLUDE	prok:spirochetes	89	Borrelia hermsii
+lcl|ptg000493l	1	19582	19582	EXCLUDE	prok:g-proteobacteria	100	Psychrobacter sp. UBA6291
