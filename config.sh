@@ -73,3 +73,21 @@ export SRY_BLAST_ASSEMBLY="$DATA_DIR/denovo_OctDegus_genome/041425-assembly/hifi
 export MOUSE_GENOME_FA="$DATA_DIR/GRCm39_genome/GCF_000001635.27_GRCm39_genomic.fna"
 export DEGU_LIFTOFF_GFF="$OUTPUT_DIR/outputs-from-liftoff/hifiasm-041425-scaffolded/hifiasm-041425-scaffolded.gff"
 export DEGU_SCAFFOLDS_FA="$DATA_DIR/denovo_OctDegus_genome/041425-assembly/hifiasm-041425-assembly-mitoFiltered-scaffolded/scaffolds.fa"
+
+# =============================================================================
+# 02-initial-genome-assembly-evaluation — Merqury + BUSCO inputs
+# =============================================================================
+export ENV_MERQURY="toolshed-merqury"
+export ENV_BUSCO="toolshed-busco"
+
+# Final assembly to evaluate (contam-filtered + haplotig-purged)
+export FINAL_ASSEMBLY="$DATA_DIR/denovo_OctDegus_genome/041425-assembly/hifiasm-041425-assembly-mitoFiltered-scaffolded-curated-masked-chrNameAssigned-contamFiltered-purgeDupSeq-haplotigOnly/assembly_final.sorted.headerRenamed.chrAssigned.contamFiltered.purgeDupSeqHaplotigOnly.fasta"
+
+# Merqury (k-mer-based completeness/consensus)
+export MERQURY_OUT_DIR="$OUTPUT_DIR/outputs-from-merqury"
+export MERYL_DB="collaborator_degu_WGS.meryl"     # Illumina WGS k-mer db (see 01_meryl_db.sh)
+export WGS_READS="/tscc/nfs/home/jhc103/ps-renlab2-link/degu-genome-assembly-proj/data/sequencing-illumina/from-WGS-collaborator/*/*.fastq.gz"
+
+# BUSCO (gene-content completeness)
+export BUSCO_OUT_DIR="$OUTPUT_DIR/outputs-from-busco-ortholog-alignment"
+export BUSCO_LINEAGE="glires_odb10"
