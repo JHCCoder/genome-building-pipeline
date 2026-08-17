@@ -92,6 +92,14 @@ export WGS_READS="/tscc/nfs/home/jhc103/ps-renlab2-link/degu-genome-assembly-pro
 export BUSCO_OUT_DIR="$OUTPUT_DIR/outputs-from-busco-ortholog-alignment"
 export BUSCO_LINEAGE="glires_odb10"
 
+# Read-coverage mapping (bwa-mem2 short-read / minimap2 long-read -> bedtools coverage)
+export ENV_BEDTOOLS="toolshed-bedtools"
+export COVERAGE_ASSEMBLY="$DATA_DIR/denovo_OctDegus_genome/041425-assembly/hifiasm-041425-assembly-mitoFiltered-scaffolded-curated-masked-chrNameAssigned/assembly_final.sorted.headerRenamed.chrAssigned.mito.fasta"
+export COVERAGE_SHORT_R1="$DATA_DIR/sequencing-illumina/from-WGS-collaborator/SRR19145623_24threads/SRR19145623_1_val_1.fq.gz $DATA_DIR/sequencing-illumina/from-WGS-collaborator/SRR19145629_24threads/SRR19145629_1_val_1.fq.gz"
+export COVERAGE_SHORT_R2="$DATA_DIR/sequencing-illumina/from-WGS-collaborator/SRR19145623_24threads/SRR19145623_2_val_2.fq.gz $DATA_DIR/sequencing-illumina/from-WGS-collaborator/SRR19145629_24threads/SRR19145629_2_val_2.fq.gz"
+export COVERAGE_HIFI_READS="$SCRATCH_DIR/hifi/male/*/*fastq.gz"
+export COVERAGE_OUT_DIR="$OUTPUT_DIR/outputs-from-read-coverage"
+
 # =============================================================================
 # 03-genome-annotation — repeat masking + annotation inputs
 # =============================================================================
