@@ -11,10 +11,12 @@ CENP-A CUT&Tag and centromeric repeat analyses (Figure 4, Figure 5, S17–S19).
 | `circos/` | Fig 5A (related) | CENP-A circos (`pyCircularize_CENPA_195_389_349.ipynb`). |
 | `cenpa-repeat-chromosome/` | S17 | TRF-array occupancy around CENP-A peaks (`repeat_occupancy_genomewide_plot.ipynb`, `repeat_occupancy_around_cenpa_core.ipynb` + numbered `scripts/` pipeline). |
 | `centromeric-HOR-metrics/` | S18, S19 | centroAnno monomer / HOR length decomposition (`monoDecomposeResult.ipynb`, `horDecomposeResult.ipynb`, + 3 supplementary notebooks). |
+| `stained-glass/` | Fig 5D | StainedGlass runner (`submit_stainedGlass.sh`) — third-party Snakemake tool, not vendored. |
 
 ## Notes
 
-- **StainedGlass** (Fig 5D self-identity heatmap / HiCAT HOR architectures) is a separate
-  Snakemake workflow under `toolshed/StainedGlass/` and is **not** included here.
+- **StainedGlass** (Fig 5D) is a third-party Snakemake tool (`toolshed/StainedGlass/`);
+  only the degu-specific runner `stained-glass/submit_stainedGlass.sh` is included,
+  not the tool itself.
 - Exploratory `*_tmp.py` scripts and `*_backup*.ipynb` notebooks were excluded.
 - Large notebooks had their embedded outputs stripped; re-run them to regenerate figures.
