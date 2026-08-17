@@ -180,6 +180,19 @@ export POLISH_ILLUMINA_R2="$DATA_DIR/sequencing-illumina/male/processed-reads/nR
 export POLISH_WORK_DIR="$OUTPUT_DIR/outputs-from-nextpolish2"
 
 # =============================================================================
+# 06-segmental-duplication-analysis — BISER inputs
+# =============================================================================
+# BISER (user-level pip install); ENV_GENOME_ANNOTATION supplies samtools
+export BISER_BIN="$HOME/.local/bin/biser"
+export BISER_OUT_DIR="$OUTPUT_DIR/outputs-from-biser"
+export BISER_THREADS=16
+export BISER_GC_HEAP="5G"
+export BISER_MAX_EDIT_ERROR=10
+export BISER_MAX_ERROR=15
+export BISER_GENOME_DIR="$DATA_DIR/genome-related-species"      # multi-species assemblies
+export BISER_GENOME_LIST="$BISER_GENOME_DIR/genome_list7.txt"   # <assembly.fna>\t<species>
+
+# =============================================================================
 # 05-tandem-repeat-analysis — processing tools
 # =============================================================================
 export TRF_BIN="$TOOLSHED_DIR/TRF-4.09.1/build/src/trf"
