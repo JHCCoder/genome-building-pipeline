@@ -124,3 +124,21 @@ export BRAKER3_PROTEINS="$BRAKER3_DIR/Vertebrata_plus_relatives.fa"
 export BLASTP_BIN="$TOOLSHED_DIR/blast+/ncbi-blast-2.16.0+/bin/blastp"
 export BLAST_DB_DIR="/tscc/nfs/home/jhc103/ps-renlab2-link/degu-genome-assembly-proj/data/protein-databases/uniprot-vertebrate"
 export INTERPROSCAN_BIN="$TOOLSHED_DIR/interproscan/interproscan-5.74-105.0/interproscan.sh"
+
+# =============================================================================
+# 04-genome-assembly-indepth-assessment-contam-filtering — purge_dup inputs
+# =============================================================================
+export ENV_ASSESSMENT="genome-assembly-assessment"
+export PURGE_DUPS_BIN="$TOOLSHED_DIR/purge_dups/bin"
+
+# Scaffolded assembly to purge (chromosome-assigned, unmasked) + its haplotig assembly
+export CHR_ASSIGNED_ASSEMBLY="$DATA_DIR/denovo_OctDegus_genome/041425-assembly/hifiasm-041425-assembly-mitoFiltered-scaffolded-curated-masked-chrNameAssigned/assembly_final.sorted.headerRenamed.chrAssigned.fasta"
+export PURGE_HAP_ASM="$DATA_DIR/denovo_OctDegus_genome/041425-assembly/hifiasm-041425-assembly/deNovo_hifiHiCMode_hifiData_aggressivePurge3_kmer21_052325.asm.hic.a_ctg.fa"
+export PURGE_OUT_DIR="$OUTPUT_DIR/outputs-from-purge-duplicate"
+export PURGE_WORK_DIR="$PURGE_OUT_DIR/hifiasm-041425-scaffolded-assembly"
+export PURGE_PB_LIST="$SCRATCH_DIR/hifi/male/R322-1_A01-hifi-reads/m54284U_220310_223856.hifi_reads.fastq.gz $SCRATCH_DIR/hifi/male/R345-2_C01-hifi-reads/m54284U_230214_161608.hifi_reads.fastq.gz $SCRATCH_DIR/hifi/male/R346-1_A01-hifi-reads/m54284U_230217_165146.hifi_reads.fastq.gz $SCRATCH_DIR/hifi/male/R378-1_B01-processed/m84216_250214_011813_s2.fastq.gz"
+
+# Final assembly + BISER segdup output (for the segdup enrichment analysis)
+export DUP_BED="$PURGE_WORK_DIR/dups.bed"
+export BISER_BEDPE="$CODE_DIR/command-line-script/genome-annotation/biser/hifiasm-041425/segdup_output_mod.bedpe"
+export ASSEMBLY_MITO_FA="$PROJ_ROOT/degu-genome-browser-pythonVersion/assembly_final.sorted.headerRenamed.chrAssigned.mito.fasta"
