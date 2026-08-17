@@ -142,3 +142,24 @@ export PURGE_PB_LIST="$SCRATCH_DIR/hifi/male/R322-1_A01-hifi-reads/m54284U_22031
 export DUP_BED="$PURGE_WORK_DIR/dups.bed"
 export BISER_BEDPE="$CODE_DIR/command-line-script/genome-annotation/biser/hifiasm-041425/segdup_output_mod.bedpe"
 export ASSEMBLY_MITO_FA="$PROJ_ROOT/degu-genome-browser-pythonVersion/assembly_final.sorted.headerRenamed.chrAssigned.mito.fasta"
+
+# =============================================================================
+# 04-… — paralog read-depth screen inputs
+# =============================================================================
+export ENV_TRANSCRIPTOME_MAPPING="transcriptome-mapping"
+export READ_DEPTH_ASSEMBLY="$DATA_DIR/denovo_OctDegus_genome/041425-assembly/hifiasm-041425-assembly-mitoFiltered-scaffolded-curated-masked-chrNameAssigned-contamFiltered/assembly_final.sorted.headerRenamed.chrAssigned.contamFiltered.fasta"
+export READ_DEPTH_HIFI_DIR="$SCRATCH_DIR/hifi/male/long-reads"
+export PARALOG_GFF="$DATA_DIR/denovo_OctDegus_genome/041425-assembly/hifiasm_041425_denovoEnhanced_peaks2utr_sorted_perfect.gff"
+export PARALOG_REPEAT_BED="$PROJ_ROOT/figure/circos-plot/feature-overview/assembly_final.sorted.headerRenamed.fasta.out.gff"
+export PARALOG_GENOME_LENGTHS="$CODE_DIR/command-line-script/contig-coverage/hifiasm_041425_scaffolded_juiceBox_sorted_hardMasked_chrAssigned_mitoAdded_genome_length.txt"
+export STAR_INDEX="$PROJ_ROOT/figure/paralog-alignment-visualization/star_index"
+
+# Genome polishing (meryl + winnowmap + yak + NextPolish2)
+export ENV_GENOME_POLISHING="genome-polishing"
+
+# Assembly to polish (mito + contam filtered, pre-scaffolding) and its reads
+export POLISH_ASM="$DATA_DIR/denovo_OctDegus_genome/041425-assembly/hifiasm-041425-assembly-mitoFiltered-contamFiltered/genome_chrom_contamRemoved.fasta"
+export POLISH_HIFI_READS="$SCRATCH_DIR/hifi/male/long-reads/*.fastq.gz"
+export POLISH_ILLUMINA_R1="$DATA_DIR/sequencing-illumina/male/processed-reads/nR184-L3-G3-P20-GATTCCTT-TGCCTATG-READ1-Sequences-trimmed.fastq.gz"
+export POLISH_ILLUMINA_R2="$DATA_DIR/sequencing-illumina/male/processed-reads/nR184-L3-G3-P20-GATTCCTT-TGCCTATG-READ2-Sequences-trimmed.fastq.gz"
+export POLISH_WORK_DIR="$OUTPUT_DIR/outputs-from-nextpolish2"
