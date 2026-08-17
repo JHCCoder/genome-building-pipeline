@@ -1,0 +1,12 @@
+# Session/transcript logs (not publication code)
+code_log.txt
+
+# Local Claude Code settings
+.claude/settings.local.json
+
+# Jupyter notebook checkpoints
+.ipynb_checkpoints/
+
+# Python cache
+__pycache__/
+*.pyc
