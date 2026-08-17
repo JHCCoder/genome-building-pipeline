@@ -1,0 +1,17 @@
+##gff-version 3
+## A tiny synthetic de-novo (Braker/AUGUSTUS) annotation with functional names
+## in the Name= attribute. RNF103 is concordant with Liftoff's Rnf103 (replaced)
+## but discordant with Chmp3 (kept); NAMED1 replaces a LOC; OTHER overlaps only
+## a discordant named gene (kept, not placed); NOVEL1 is genuinely novel (added).
+chrom1	AUGUSTUS	gene	380	720	.	+	.	ID=g1;Name=RNF103
+chrom1	AUGUSTUS	mRNA	380	720	.	+	.	ID=g1.t1;Parent=g1
+chrom1	AUGUSTUS	CDS	400	700	.	+	0	ID=g1.t1.CDS1;Parent=g1.t1
+chrom1	AUGUSTUS	gene	950	1550	.	+	.	ID=g2;Name=NAMED1
+chrom1	AUGUSTUS	mRNA	950	1550	.	+	.	ID=g2.t1;Parent=g2
+chrom1	AUGUSTUS	CDS	1000	1500	.	+	0	ID=g2.t1.CDS1;Parent=g2.t1
+chrom1	AUGUSTUS	gene	3050	3250	.	+	.	ID=g3;Name=OTHER
+chrom1	AUGUSTUS	mRNA	3050	3250	.	+	.	ID=g3.t1;Parent=g3
+chrom1	AUGUSTUS	CDS	3070	3230	.	+	0	ID=g3.t1.CDS1;Parent=g3.t1
+chrom1	AUGUSTUS	gene	5000	5300	.	+	.	ID=g4;Name=NOVEL1
+chrom1	AUGUSTUS	mRNA	5000	5300	.	+	.	ID=g4.t1;Parent=g4
+chrom1	AUGUSTUS	CDS	5050	5250	.	+	0	ID=g4.t1.CDS1;Parent=g4.t1

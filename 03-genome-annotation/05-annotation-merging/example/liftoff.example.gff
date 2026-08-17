@@ -1,0 +1,22 @@
+##gff-version 3
+## A tiny synthetic Liftoff annotation. Named gene pair Chmp3/Rnf103 at a
+## tandem locus, an unannotated LOC gene, an unrelated gene, and a discordant
+## named gene — exercising all three merge rules (see example/README).
+chrom1	Liftoff	gene	100	500	.	+	.	ID=gene-Chmp3;Name=Chmp3;gene_biotype=protein_coding
+chrom1	Liftoff	mRNA	100	500	.	+	.	ID=rna-Chmp3-1;Parent=gene-Chmp3
+chrom1	Liftoff	CDS	150	400	.	+	0	ID=cds1;Parent=rna-Chmp3-1
+chrom1	Liftoff	gene	400	700	.	+	.	ID=gene-Rnf103;Name=Rnf103;gene_biotype=protein_coding
+chrom1	Liftoff	mRNA	400	700	.	+	.	ID=rna-Rnf103-1;Parent=gene-Rnf103
+chrom1	Liftoff	CDS	420	680	.	+	0	ID=cds2;Parent=rna-Rnf103-1
+chrom1	Liftoff	gene	1000	1500	.	+	.	ID=gene-LOC111111111;Name=LOC111111111;gene_biotype=protein_coding
+chrom1	Liftoff	mRNA	1000	1500	.	+	.	ID=rna-LOC1;Parent=gene-LOC111111111
+chrom1	Liftoff	CDS	1100	1400	.	+	0	ID=cds3;Parent=rna-LOC1
+chrom1	Liftoff	gene	2000	2500	.	+	.	ID=gene-Kept;Name=Kept;gene_biotype=protein_coding
+chrom1	Liftoff	mRNA	2000	2500	.	+	.	ID=rna-Kept-1;Parent=gene-Kept
+chrom1	Liftoff	CDS	2100	2400	.	+	0	ID=cds4;Parent=rna-Kept-1
+chrom1	Liftoff	gene	3000	3300	.	+	.	ID=gene-Discord;Name=Discord;gene_biotype=protein_coding
+chrom1	Liftoff	mRNA	3000	3300	.	+	.	ID=rna-Discord-1;Parent=gene-Discord
+chrom1	Liftoff	CDS	3050	3250	.	+	0	ID=cds5;Parent=rna-Discord-1
+chrom1	Liftoff	gene	6000	6200	.	-	.	ID=gene-LOC999999999;Name=LOC999999999;gene_biotype=protein_coding
+chrom1	Liftoff	mRNA	6000	6200	.	-	.	ID=rna-LOC2;Parent=gene-LOC999999999
+chrom1	Liftoff	CDS	6050	6150	.	-	0	ID=cds6;Parent=rna-LOC2
