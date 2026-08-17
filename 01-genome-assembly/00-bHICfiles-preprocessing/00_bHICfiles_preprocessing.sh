@@ -1,83 +1,94 @@
 #!/bin/bash
-#SBATCH -J 090725_multiSubmission_bulk_HiC_preprocessing_403_ear_deep_2_octDeg1_continued #Optional, short for --job-name
-#SBATCH -N 1 #Number of nodes
-#SBATCH -n 1 #Total number of tasks increase this number to increase parallelization
-#SBATCH -c 8 #Number of threads per process
+#SBATCH -J bhic_preprocess
+#SBATCH -N 1
+#SBATCH -n 1
+#SBATCH -c 8
 #SBATCH --mem=178G
-#SBATCH -t 4-00:00:00 #Short for --time walltime limit
-#SBATCH -o /tscc/nfs/home/jhc103/cluster-logs/%x.%j.%N.out #standard output name
-#SBATCH -e /tscc/nfs/home/jhc103/cluster-logs/%x.%j.%N.err #Optional, standard error name
-#SBATCH -p hotel #Partition name
-#SBATCH -q hotel #QOS name
-#SBATCH -A htl195 #Allocation name
-#SBATCH --mail-type END #Optional, Send mail when job ends
-#SBATCH --mail-user jhc103@ucsd.edu #Optional, Send mail to this address
+#SBATCH -t 4-00:00:00
+# --- Cluster-specific (Slurm on TSCC/UCSD) — adjust for your scheduler ---
+#SBATCH -o /tscc/nfs/home/jhc103/cluster-logs/%x.%j.%N.out
+#SBATCH -e /tscc/nfs/home/jhc103/cluster-logs/%x.%j.%N.err
+#SBATCH -p hotel
+#SBATCH -q hotel
+#SBATCH -A htl195
+#SBATCH --mail-type END
+#SBATCH --mail-user=you@example.com   # TODO: your email
 
-source /tscc/nfs/home/jhc103/.bashrc
-conda activate bulk-HiC-processing
+# Load shared configuration (config.sh at the repo root)
+_repo_root="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
+while [[ ! -f "$_repo_root/config.sh" && "$_repo_root" != "/" ]]; do _repo_root="$(dirname "$_repo_root")"; done
+source "$_repo_root/config.sh"
+unset _repo_root
 
-genome="octDeg2" #Other genome tested: "hifiasm_121624"
-genome_file="/tscc/projects/ps-renlab2/jhc103/degu-genome-assembly-proj/data/denovo_OctDegus_genome/041425-assembly/hifiasm-041425-assembly-mitoFiltered-scaffolded-curated-masked-chrNameAssigned/assembly_final.sorted.headerRenamed.chrAssigned.mito.fasta" #"/tscc/projects/ps-renlab2/jhc103/degu-genome-assembly-proj/data/OctDegus1_genome/OctDeg1/fasta/genome.fa" #Path to other genome: "/tscc/projects/ps-renlab2/jhc103/degu-genome-assembly-proj/output/assembly-of-interest/hifiasm-121624/deNovo_hic_ONT_aggressivePurge3_kmer21_121624.hic.p_ctg.fa"
-chrom_file="/tscc/projects/ps-renlab2/jhc103/degu-genome-assembly-proj/data/denovo_OctDegus_genome/041425-assembly/hifiasm-041425-assembly-mitoFiltered-scaffolded-curated-masked-chrNameAssigned/assembly_final.sorted.headerRenamed.chrAssigned.mito.fasta.fai" #"/tscc/projects/ps-renlab2/jhc103/degu-genome-assembly-proj/data/OctDegus1_genome/OctDeg1/fasta/genome.fa.fai" # Path to other genome chrom file: "/tscc/projects/ps-renlab2/jhc103/degu-genome-assembly-proj/output/assembly-of-interest/hifiasm-121624/deNovo_hic_ONT_aggressivePurge3_kmer21_121624.hic.p_ctg.fa.fai"
+source ~/.bashrc   # initialize conda (adjust for your setup)
+conda activate "$ENV_BULK_HIC"
 
+# Usage: submitted once per sample by
+# 00_submittingFiles_for_bHICfiles_preprocessing.sh with three arguments:
+#   $1 = read_file1 (raw Hi-C R1), $2 = read_file2 (raw Hi-C R2), $3 = sample name
+read_file1="$1"
+read_file2="$2"
+name1="$3"
 
-map_dir="/tscc/nfs/home/jhc103/ps-renlab2-link/degu-genome-assembly-proj/output/mapped_alignments"
+genome="octDeg2"                # label only
+genome_file="$BHIC_GENOME"
+chrom_file="$BHIC_GENOME_FAI"
 
-mat_dir="/tscc/nfs/home/jhc103/ps-renlab2-link/degu-genome-assembly-proj/output/matrix"
-input_dir="/tscc/projects/ps-renlab2/nzemke/Element_share/20250811"
-data_dir="/tscc/nfs/home/jhc103/ps-renlab2-link/degu-genome-assembly-proj/data/sequencing-reads-HiC"
+input_dir="$BHIC_RAW_INPUT_DIR"
+data_dir="$BHIC_DATA_DIR"
+map_dir_sam="$BHIC_MAP_DIR/$name1"
+mat_dir_sam="$BHIC_MATRIX_DIR/$name1"
+mkdir -p "$map_dir_sam" "$mat_dir_sam"
 
-echo "read_file1: $1"
-echo "read_file2: $2"
-## This is the name of the sample 
-name1=$3 ##$(echo "$read_file1" | awk -F '_' '{print $1 "_" $2}')
-## These are name of reads 
-read1=${1%.fastq.gz}
-read2=${2%.fastq.gz}
+read1="${read_file1%.fastq.gz}"
+read2="${read_file2%.fastq.gz}"
 
-map_dir_sam=$map_dir/$name1
-mat_dir_sam=$mat_dir/$name1
-mkdir -p $map_dir_sam
-#mkdir -p $trim_dir_sam
-mkdir -p $mat_dir_sam
-
-# Check if the output trim file exists
-if [ ! -f "$data_dir/${read1}_val_1.fq.gz" ] && [ ! -f "$data_dir/${read1}_val_1.fq.gz" ]; then
-    echo "Output file does not exist. Running Trim Galore!"
-    trim_galore --cores 8 --paired $input_dir/$1 $input_dir/$2 -o $data_dir
+# (1) Trim adapters/low-quality bases (skip if already done)
+if [[ ! -f "$data_dir/${read1}_val_1.fq.gz" && ! -f "$data_dir/${read2}_val_2.fq.gz" ]]; then
+  echo "Output file does not exist. Running Trim Galore!"
+  trim_galore --cores 8 --paired "$input_dir/$read_file1" "$input_dir/$read_file2" -o "$data_dir"
 else
-    echo "Output file already exists. Skipping Trim Galore!"
+  echo "Output file already exists. Skipping Trim Galore!"
 fi
 
-## Check if the index files are available
+# (2) Index the genome with bwa-mem2 (if not already indexed)
 index_files=("${genome_file}.bwt.2bit.64" "${genome_file}.bwt.8bit.32" "${genome_file}.pac")
 for file in "${index_files[@]}"; do
-    [[ ! -f "$file" ]] && { echo "Building index for bwa-mem2..."; bwa-mem2 index "$genome_file"; break; }
+  [[ ! -f "$file" ]] && { echo "Building index for bwa-mem2..."; bwa-mem2 index "$genome_file"; break; }
 done
 
-## Generate alignment then pair sorted alignment
-bwa-mem2 mem -SP5M -T0 -t8 $genome_file $data_dir/${read1}_val_1.fq.gz $data_dir/${read2}_val_2.fq.gz | samtools view -bhS - > $map_dir_sam/${name1}_${genome}.bam
+# (3) Align and sort
+bwa-mem2 mem -SP5M -T0 -t8 "$genome_file" "$data_dir/${read1}_val_1.fq.gz" "$data_dir/${read2}_val_2.fq.gz" \
+  | samtools view -bhS - > "$map_dir_sam/${name1}_${genome}.bam"
 
-
+# (4) Parse pairs, sort, dedup, split
 echo "starting pairsam generation"
-samtools view -h $map_dir_sam/${name1}_${genome}.bam | pairtools parse --min-mapq 40 --walks-policy all --nproc-in 4 --nproc-out 4 --max-inter-align-gap 30 --chroms-path $chrom_file --assembly $genome_file --output-stats ${map_dir_sam}/${name1}_${genome}.pairparse.txt | pairtools sort --nproc 8 --tmpdir /tscc/lustre/ddn/scratch/jhc103/temp-dir-fast/ > ${map_dir_sam}/${name1}_${genome}.sorted.pairsam
+samtools view -h "$map_dir_sam/${name1}_${genome}.bam" \
+  | pairtools parse --min-mapq 40 --walks-policy all --nproc-in 4 --nproc-out 4 \
+      --max-inter-align-gap 30 --chroms-path "$chrom_file" --assembly "$genome_file" \
+      --output-stats "$map_dir_sam/${name1}_${genome}.pairparse.txt" \
+  | pairtools sort --nproc 8 --tmpdir "$SCRATCH_DIR/temp-dir-fast/" \
+  > "$map_dir_sam/${name1}_${genome}.sorted.pairsam"
 
-pairtools dedup --nproc-in 4 --nproc-out 4 --mark-dups --output-stats ${map_dir_sam}/${name1}_${genome}.pairdedup.txt ${map_dir_sam}/${name1}_${genome}.sorted.pairsam | pairtools split --nproc-in 4 --nproc-out 4 --output-pairs ${map_dir_sam}/${name1}_${genome}.pairs --output-sam - | samtools view -bS -@ 8 | samtools sort -T ${map_dir_sam} -@ 8 -o ${map_dir_sam}/${name1}_${genome}.pairtools.bam
+pairtools dedup --nproc-in 4 --nproc-out 4 --mark-dups \
+    --output-stats "$map_dir_sam/${name1}_${genome}.pairdedup.txt" \
+    "$map_dir_sam/${name1}_${genome}.sorted.pairsam" \
+  | pairtools split --nproc-in 4 --nproc-out 4 \
+      --output-pairs "$map_dir_sam/${name1}_${genome}.pairs" --output-sam - \
+  | samtools view -bS -@ 8 \
+  | samtools sort -T "$map_dir_sam" -@ 8 -o "$map_dir_sam/${name1}_${genome}.pairtools.bam"
 
-###### 
-## Delete the huge pairsam file 
-rm ${map_dir_sam}/${name1}_${genome}.sorted.pairsam
+# Remove the huge intermediate pairsam file
+rm "$map_dir_sam/${name1}_${genome}.sorted.pairsam"
 
-################
-## Generate matrix files 
+# (5) Build and balance contact matrices
+bgzip -f "$map_dir_sam/${name1}_${genome}.pairs"
+pairix -f "$map_dir_sam/${name1}_${genome}.pairs.gz"
 
-bgzip -f ${map_dir_sam}/${name1}_${genome}.pairs
-pairix -f ${map_dir_sam}/${name1}_${genome}.pairs.gz
-
-# ### binning
 bs=5000
-#cooler cload pairix ${chrom_file}:${bs} ${map_dir_sam}/${name1}_${genome}.pairs.gz ${mat_dir_sam}/${name1}_${genome}_${bs}.cool
+cooler cload pairix "${chrom_file}:${bs}" "$map_dir_sam/${name1}_${genome}.pairs.gz" "$mat_dir_sam/${name1}_${genome}_${bs}.cool"
 
-# ### Balancing
-cooler zoomify --balance --balance-args '--convergence-policy store_nan' -p 8 -o ${mat_dir_sam}/${name1}_${genome}.mcool -r 5000,10000,25000,50000,100000,250000,500000,1000000,2500000 ${mat_dir_sam}/${name1}_${genome}_${bs}.cool
-
+cooler zoomify --balance --balance-args '--convergence-policy store_nan' -p 8 \
+  -o "$mat_dir_sam/${name1}_${genome}.mcool" \
+  -r 5000,10000,25000,50000,100000,250000,500000,1000000,2500000 \
+  "$mat_dir_sam/${name1}_${genome}_${bs}.cool"

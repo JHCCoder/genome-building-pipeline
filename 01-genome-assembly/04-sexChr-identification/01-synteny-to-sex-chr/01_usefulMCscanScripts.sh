@@ -1,80 +1,62 @@
 #!/bin/bash
+# Synteny to sex chromosomes using JCVI / MCScanX.
+#
+# This is a runbook (run the commands in order), not a single monolithic job.
+# Idea: transfer annotation to the de-novo assembly, then find synteny between
+# our assembly and a reference with sex-chromosome information (here mouse
+# GRCm39). Scaffolds with strong/complete synteny to an annotated sex chromosome
+# are sex-linked.
+#
+# Required helper scripts (expected in this directory, not yet in the repo):
+#   count_transcript.sh  make_seqid.sh  make_layout.sh  highlight_chrom.sh
+#   highlight_chrom1.sh  find_black.py
+# Required data files (expected in the working directory):
+#   GCF_000001635.27_GRCm39_genomic.gff  chrom_dict_mouse_GRC29.txt  blocks.layout
 
-source ~/.bashrc
-conda activate toolshed-jcvi 
+# Load shared configuration (config.sh at the repo root)
+_repo_root="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
+while [[ ! -f "$_repo_root/config.sh" && "$_repo_root" != "/" ]]; do _repo_root="$(dirname "$_repo_root")"; done
+source "$_repo_root/config.sh"
+unset _repo_root
 
-
-## Some gffs for degus:
-# 1. braker gff: ~/ps-renlab2-link/degu-genome-assembly-proj/code/command-line-script/genome-annotation/annotate-braker3-results/annotate-gff/braker.uniprotBlast.interproscan.gff/braker.gff3
-
+source ~/.bashrc   # initialize conda (adjust for your setup)
+conda activate "$ENV_JCVI"
 
 ## Process mouse data
-gffread GCF_000001635.27_GRCm39_genomic.gff -g /tscc/projects/ps-renlab2/jhc103/degu-genome-assembly-proj/data/GRCm39_genome/GCF_000001635.27_GRCm39_genomic.fna -x GRCm39.cds.fna
-
-
+gffread GCF_000001635.27_GRCm39_genomic.gff -g "$MOUSE_GENOME_FA" -x GRCm39.cds.fna
 python -m jcvi.formats.fasta format GRCm39.cds.fna mouse.cds
-
 python -m jcvi.formats.gff bed --type=mRNA --key=ID input/GCF_000001635.27_GRCm39_genomic.gff -o mouse_orig.bed
-
-#awk 'NR==FNR {dict[$2]=$1; next} $1 in dict {$1=dict[$1]} 1' chrom_dict_mouse_GRC29.txt mouse_orig.bed > mouse.bed # create the dict using the ncbi page for the genome 
+# Rename chromosomes using a dict built from the NCBI page for the genome
 awk -F'\t' -v OFS='\t' 'NR==FNR {dict[$2]=$1; next} $1 in dict {$1=dict[$1]} 1' chrom_dict_mouse_GRC29.txt mouse_orig.bed > mouse.bed
 
-## Process degu data 
-gffread /tscc/nfs/home/jhc103/ps-renlab2-link/degu-genome-assembly-proj/output/outputs-from-liftoff/hifiasm-041425-scaffolded/hifiasm-041425-scaffolded.gff -g ~/ps-renlab2-link/degu-genome-assembly-proj/data/denovo_OctDegus_genome/041425-assembly/hifiasm-041425-assembly-mitoFiltered-scaffolded1/scaffolds.fa -x hifiasm_041425_haphic.cds.fna
-
+## Process degu data
+gffread "$DEGU_LIFTOFF_GFF" -g "$DEGU_SCAFFOLDS_FA" -x hifiasm_041425_haphic.cds.fna
 python -m jcvi.formats.fasta format hifiasm_041425_haphic.cds.fna degus.cds
+python -m jcvi.formats.gff bed --type=mRNA --key=ID "$DEGU_LIFTOFF_GFF" -o degus.bed
 
-python -m jcvi.formats.gff bed --type=mRNA --key=ID /tscc/nfs/home/jhc103/ps-renlab2-link/degu-genome-assembly-proj/output/outputs-from-liftoff/hifiasm-041425-scaffolded/hifiasm-041425-scaffolded.gff -o degus.bed
-
-## Run the synteny
+## Run synteny, dotplot, and per-chromosome gene depth
 python -m jcvi.compara.catalog ortholog mouse degus --cscore=.99 --no_strip_names
-
-## Run the dotplot 
 python -m jcvi.graphics.dotplot mouse.degus.anchors
-
-## Run the depth or the # of genes match
 python -m jcvi.compara.synteny depth --histogram mouse.degus.anchors
 
-##  Checking whether the anchor is available for a particular chromosome
-./count_transcript.sh ChrY mouse.bed mouse.degus.anchors 
+## Check whether an anchor exists for a particular chromosome
+./count_transcript.sh ChrY mouse.bed mouse.degus.anchors
 
-#### Examine MACROSYNTENY ######
-#### Require 2 additional files: seqids => sets of chromosomes to include
-####				 layout => how to draw the chromosomes
-## Make more simple anchors 
+#### MACROSYNTENY (needs seqids + layout files) ####
 python -m jcvi.compara.synteny screen --minspan=30 --simple mouse.degus.anchors mouse.degus.anchors.simple
-
-## Make a karyotype seqids file first
 ./make_seqid.sh mouse.bed degus.bed mouse.degus.anchors.simple seqids
-
-## Make a layout file 
 ./make_layout.sh mouse.bed degus.bed mouse.degus.anchors.simple layout
-
-## Write synteny plot
 python -m jcvi.graphics.karyotype seqids layout
-## You can also add parameter to command:
 python -m jcvi.graphics.karyotype seqids layout --figsize 14x10 --dpi 300 --o large_karyotype --format png
 
-## ==> Highlight certain alignments 
+## Highlight certain alignments
 ./highlight_chrom.sh mouse.degus.anchors.simple mouse.bed degus.bed mouse.degus.anchors.chrX.simple "ChrX:r"
 ./make_layout.sh mouse.bed degus.bed mouse.degus.anchors.chrX.simple layout
 python -m jcvi.graphics.karyotype seqids layout --figsize 14x10 --dpi 300 --o karyotype_chrX.pdf --chrstyle=roundrect
-## Or multiple alignments
-./highlight_chrom1.sh mouse.degus.anchors.simple mouse.bed degus.bed mouse.degus.anchors.chr1.chrX.simple1 "Chr1:g*" "ChrX:r*"
-# Then change your layout file and you rerun the karyotype command
 
-
-#### Examine Microsynteny ####
-
-## Isolate the regions 
+#### MICROSYNTENY ####
 python -m jcvi.compara.synteny mcscan mouse.bed mouse.degus.lifted.anchors --iter=1 -o mouse.degus.i1.blocks
-
-#App => rna-XR_380384.5, rna-XM_006522873.4 *, rna-NM_007471.3, rna-NM_001198825.1, rna-NM_001198824.1, rna-NM_001198823.1, rna-XM_006522874.3, rna-XM_036159749.1
 python find_black.py input/GCF_000001635.27_GRCm39_genomic.gff mouse.degus.i1.blocks App app_blocks.txt
-
 python -m jcvi.formats.bed merge mouse.bed degus.bed -o mouse_degus.bed
-
-cp ../hifi022425scaf-GRCm38-mouse-degu/blocks.layout .
-
+# cp ../hifi022425scaf-GRCm38-mouse-degu/blocks.layout .   # context-specific layout reuse
 python -m jcvi.graphics.synteny app_blocks.txt mouse_degus.bed blocks.layout --glyphstyle=arrow --format png
-
