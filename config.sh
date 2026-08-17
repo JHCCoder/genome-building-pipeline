@@ -91,11 +91,3 @@ export WGS_READS="/tscc/nfs/home/jhc103/ps-renlab2-link/degu-genome-assembly-pro
 # BUSCO (gene-content completeness)
 export BUSCO_OUT_DIR="$OUTPUT_DIR/outputs-from-busco-ortholog-alignment"
 export BUSCO_LINEAGE="glires_odb10"
-
-# =============================================================================
-# 03-genome-annotation — annotation merging (Liftoff + de-novo) finalization
-# =============================================================================
-export ENV_AGAT="toolshed-agat"
-export ENV_PEAKS2UTR="toolshed-peaks2utr"
-# peaks2utr working directory (holds merged.bam, .cache/, .log/)
-export PEAKS2UTR_DIR="$CODE_DIR/command-line-script/genome-annotation/peaks2utr"

@@ -214,65 +214,19 @@ Notes for the degu run:
   records them under `replace_skipped_discordant_kept`.
 * Post-merge formatting (sorting with AGAT, 3′ UTR extension with `peaks2utr`,
   paralog `-L`/`-DL`/`-RL` suffix naming) are separate, degu-specific steps and
-  are not part of `merge_annotations.py` itself. The UTR step is, however,
-  captured in this directory — see below.
-
-## Finalization: 3′ UTR annotation (`peaks2utr`) + assembly
-
-The merge output carries gene models but no UTR features. UTRs are restored in
-two steps, both in this directory:
-
-### 1. `peaks2utr_subset_rerun.sh` — 3′ UTR annotation with peaks2utr
-
-[peaks2utr](https://github.com/haessar/peaks2utr) annotates 3′ UTRs from RNA-seq
-coverage peaks. **It generates only 3′ UTRs** — 5′ UTRs are carried through from
-its input GFF, never created. Run it inside the `peaks2utr` working directory
-(it resolves `.cache`/`.log` relative to `cwd`) so the cached stranded BAMs,
-MACS peaks and pileups are reused:
-
-```bash
-peaks2utr <input.gff3> merged.bam \
-    --do-pseudo --keep-cache --extend-utr -p 8 --max-distance 1500 \
-    -o <output.gff3>
-```
-
-### 2. `assemble_final.py` — combine gene models + UTRs
-
-Takes the merged gene models and re-keys UTR features onto them from a previous
-peaks2utr output (unchanged genes) plus a fresh subset peaks2utr output
-(changed genes). Two non-obvious behaviours are baked in (see the module
-docstring):
-
-* **changed genes match by gene ID, not CDS span** — peaks2utr's gffutils output
-  keeps only the outermost transcript per gene, so gene-level CDS spans disagree
-  with the merged (multi-transcript) gene;
-* **UTR `Parent` re-keying** tries, in order: direct transcript-ID match →
-  CDS-span match → single-transcript fallback → nearest-3′-end. This keeps UTRs
-  parented even for de-novo genes (Braker transcript IDs, CDS rows with no
-  `Parent`) and ncRNA (no CDS), so the final GFF has no dangling UTR Parents.
+  are not part of `merge_annotations.py` itself.
 
 ## Share-repo notes
 
 This tool lives at `03-genome-annotation/05-annotation-merging/` in the
-`genome-building-pipeline` repository.
-
-**Finalization workflow** (degus-specific, run in this order):
+`genome-building-pipeline` repository. The core workflow is:
 
 1. `list-building/` — build the three curated TSV lists (rename / replace / add).
 2. `merge_annotations.py` (list mode) — `output/<prefix>_merged.gff3`.
-3. `rebuild_subset.py` — the "changed-gene" subset for peaks2utr.
-4. `peaks2utr_subset_rerun.sh` — 3′ UTRs for the changed genes.
-5. `assemble_final.py` — combine gene models + UTRs.
-6. `agat_normalize_final.sh` (or `finalize_annotation.sh`) — AGAT normalize + verify.
 
-The degus-specific file paths were moved out of the code so the scripts are
-reusable:
-
-- `assemble_final.py` and `rebuild_subset.py` take `--*` CLI arguments (run with
-  `--help` to see them);
-- the three `.sh` orchestration scripts read conda env names and the peaks2utr
-  working directory from `config.sh` (repo root), and keep their degus-specific
-  input filenames as clearly-marked variables at the top of each script.
+`merge_annotations.py` + `src/` are dependency-light (Python standard library
+only) and driven entirely by `--*` CLI arguments; `list-building/` reads its
+inputs from a clearly-marked `## 0. Configuration` cell.
 
 ## License / citation
 
