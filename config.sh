@@ -91,3 +91,36 @@ export WGS_READS="/tscc/nfs/home/jhc103/ps-renlab2-link/degu-genome-assembly-pro
 # BUSCO (gene-content completeness)
 export BUSCO_OUT_DIR="$OUTPUT_DIR/outputs-from-busco-ortholog-alignment"
 export BUSCO_LINEAGE="glires_odb10"
+
+# =============================================================================
+# 03-genome-annotation — repeat masking + annotation inputs
+# =============================================================================
+export ENV_REPEATMODELER="toolshed-repeatmodeler"
+export ENV_LIFTOFF="toolshed-liftoff"
+
+# Final masked / mito-assigned assemblies (annotation target)
+export MASKED_ASSEMBLY="$DATA_DIR/denovo_OctDegus_genome/041425-assembly/hifiasm-041425-assembly-mitoFiltered-scaffolded-curated-masked-chrNameAssigned/assembly_final.sorted.headerRenamed.chrAssigned.masked.fasta"
+export MITO_ASSEMBLY="$DATA_DIR/denovo_OctDegus_genome/041425-assembly/hifiasm-041425-assembly-mitoFiltered-scaffolded-curated-masked-chrNameAssigned/assembly_final.sorted.headerRenamed.chrAssigned.mito.fasta"
+
+# Repeat masking (RepeatModeler / RepeatMasker)
+export REPEAT_MODELER_ASM="$OUTPUT_DIR/outputs-from-haphic-alignment/references_hifiasm_male403_hifiHiCMode_022425/04.build/scaffolds.fa"
+export REPEAT_MASKER_ASM="$DATA_DIR/denovo_OctDegus_genome/041425-assembly/hifiasm-041425-assembly-hap-contamFiltered-mitoFiltered-scaffolded/hap2_scaffolds.fa"
+export REPEAT_OUT_DIR="$OUTPUT_DIR/outputs-from-repeatmasker"
+
+# Liftoff (transfer-based annotation)
+export LIFTOFF_QUERY="$OUTPUT_DIR/outputs-from-repeatmasker/verkko_hap1_scaffolded/scaffolds.fa"
+export LIFTOFF_REF="$MITO_ASSEMBLY"
+export LIFTOFF_REF_GFF="$DATA_DIR/denovo_OctDegus_genome/041425-assembly/hifiasm_041425_denovoEnhanced_peaks2utr_sorted.gff3"
+
+# De-novo (Braker3 + RNA-seq) inputs
+export MRNA_DIR="$DATA_DIR/sequencing-mRNAseq/SRA-ncbi-deposits"
+export HISAT2_OUT_DIR="$OUTPUT_DIR/outputs-from-hisat2Aligned-samtoolSorted-mRNA-transcript"
+export HISAT2_INDEX_NAME="hifiasm_041425_haphic_masked_curated"
+export BRAKER3_DIR="$CODE_DIR/command-line-script/genome-annotation/braker3"
+export BRAKER3_SIF="$BRAKER3_DIR/braker3.sif"
+export BRAKER3_PROTEINS="$BRAKER3_DIR/Vertebrata_plus_relatives.fa"
+
+# Functional annotation tools
+export BLASTP_BIN="$TOOLSHED_DIR/blast+/ncbi-blast-2.16.0+/bin/blastp"
+export BLAST_DB_DIR="/tscc/nfs/home/jhc103/ps-renlab2-link/degu-genome-assembly-proj/data/protein-databases/uniprot-vertebrate"
+export INTERPROSCAN_BIN="$TOOLSHED_DIR/interproscan/interproscan-5.74-105.0/interproscan.sh"

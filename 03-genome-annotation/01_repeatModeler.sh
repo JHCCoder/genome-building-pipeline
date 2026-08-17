@@ -1,35 +1,36 @@
 #!/bin/bash
-#SBATCH -J 020324_repeatModeler #Optional, short for --job-name
-#SBATCH -N 1 #Number of nodes
-#SBATCH -n 1 #Total number of tasks increase this number to increase parallelization
-#SBATCH -c 33 #Number of threads per process
-#SBATCH -t 7-00:00:00 #Short for --time walltime limit
-#SBATCH --mem 660G # Request 80 GB of memory
-#SBATCH -o /tscc/nfs/home/jhc103/cluster-logs/%x.%j.%N.out #standard output name
-#SBATCH -e /tscc/nfs/home/jhc103/cluster-logs/%x.%j.%N.err #Optional, standard error name
-#SBATCH -p condo #Partition name
-#SBATCH -q condo #QOS name
-#SBATCH -A csd788 #Allocation name
-#SBATCH --mail-type END #Optional, Send mail when job ends
-#SBATCH --mail-user jhc103@ucsd.edu #Optional, Send mail to this address
+#SBATCH -J repeatModeler
+#SBATCH -N 1
+#SBATCH -n 1
+#SBATCH -c 33
+#SBATCH -t 7-00:00:00
+#SBATCH --mem=660G
+# --- Cluster-specific (Slurm on TSCC/UCSD) — adjust for your scheduler ---
+#SBATCH -o /tscc/nfs/home/jhc103/cluster-logs/%x.%j.%N.out
+#SBATCH -e /tscc/nfs/home/jhc103/cluster-logs/%x.%j.%N.err
+#SBATCH -p condo
+#SBATCH -q condo
+#SBATCH -A csd788
+#SBATCH --mail-type END
+#SBATCH --mail-user=you@example.com   # TODO: your email
 
-source /tscc/nfs/home/jhc103/.bashrc
-conda activate toolshed-repeatmodeler
+# Load shared configuration (config.sh at the repo root)
+_repo_root="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
+while [[ ! -f "$_repo_root/config.sh" && "$_repo_root" != "/" ]]; do _repo_root="$(dirname "$_repo_root")"; done
+source "$_repo_root/config.sh"
+unset _repo_root
 
-## Build database
-BuildDatabase -name odegus /tscc/projects/ps-renlab2/jhc103/degu-genome-assembly-proj/output/outputs-from-haphic-alignment/references_hifiasm_male403_hifiHiCMode_022425/04.build/scaffolds.fa
+source ~/.bashrc   # initialize conda (adjust for your setup)
+conda activate "$ENV_REPEATMODELER"
 
-# Step 2: Build de novo repeat library using the masked assembly
-# Use the soft-masked output from step 1
-initial_masked_genome="/tscc/projects/ps-renlab2/jhc103/degu-genome-assembly-proj/output/outputs-from-haphic-alignment/references_hifiasm_male403_hic_ont_121624/04.build/scaffolds.fa"
-#temp_dir="/tscc/lustre/ddn/scratch/jhc103/repeatModel-odegus"
-output_dir="/tscc/projects/ps-renlab2/jhc103/degu-genome-assembly-proj/output/outputs-from-repeatmasker/hifiasm-121624-haphic"
+# Build a de-novo repeat library (RepeatModeler) from the scaffolded assembly,
+# then mask with RepeatMasker (see 02_repeatMasker.sh).
+work_dir="$REPEAT_OUT_DIR/hifiasm-121624-haphic"
+mkdir -p "$work_dir"
+cd "$work_dir"
 
-mkdir -p $output_dir
-#cd $output_dir
+# Step 1: build a BLAST database of the assembly
+BuildDatabase -name odegus "$REPEAT_MODELER_ASM"
 
-#BuildDatabase -engine ncbi -name odegus_db $initial_masked_genome 
+# Step 2: build the de-novo repeat library (~17-18 h)
 RepeatModeler -database odegus -threads 32 -LTRStruct -engine ncbi > out.log
-
-## Move result out of temp
-cp -r odegus_db* $output_dir
