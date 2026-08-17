@@ -35,7 +35,7 @@ export HAPHIC_DIR="$TOOLSHED_DIR/HapHiC"           # contains 'haphic' and 'util
 # =============================================================================
 
 # HiFi reads (hifiasm)
-export HIFI_READS="$SCRATCH_DIR/hifi/male/*/*fastq"
+export HIFI_READS="$SCRATCH_DIR/hifi/male/*/*fastq.gz"
 
 # Hi-C reads — raw trim_galore ("_val_") output, used by hifiasm --h1/--h2
 export HIC_RAW_R1="$DATA_DIR/sequencing-reads-HiC/WB_438_2_S1_L008_R1_001_val_1.fq.gz"
@@ -144,7 +144,7 @@ export CHR_ASSIGNED_ASSEMBLY="$DATA_DIR/denovo_OctDegus_genome/041425-assembly/h
 export PURGE_HAP_ASM="$DATA_DIR/denovo_OctDegus_genome/041425-assembly/hifiasm-041425-assembly/deNovo_hifiHiCMode_hifiData_aggressivePurge3_kmer21_052325.asm.hic.a_ctg.fa"
 export PURGE_OUT_DIR="$OUTPUT_DIR/outputs-from-purge-duplicate"
 export PURGE_WORK_DIR="$PURGE_OUT_DIR/hifiasm-041425-scaffolded-assembly"
-export PURGE_PB_LIST="$SCRATCH_DIR/hifi/male/R322-1_A01-hifi-reads/m54284U_220310_223856.hifi_reads.fastq.gz $SCRATCH_DIR/hifi/male/R345-2_C01-hifi-reads/m54284U_230214_161608.hifi_reads.fastq.gz $SCRATCH_DIR/hifi/male/R346-1_A01-hifi-reads/m54284U_230217_165146.hifi_reads.fastq.gz $SCRATCH_DIR/hifi/male/R378-1_B01-processed/m84216_250214_011813_s2.fastq.gz"
+export PURGE_PB_LIST="$SCRATCH_DIR/hifi/male/long-reads/m54284U_220310_223856.hifi_reads.fastq.gz $SCRATCH_DIR/hifi/male/long-reads/m54284U_230214_161608.hifi_reads.fastq.gz $SCRATCH_DIR/hifi/male/long-reads/m54284U_230217_165146.hifi_reads.fastq.gz $SCRATCH_DIR/hifi/male/long-reads/m84216_250214_011813_s2.fastq.gz"
 
 # Final assembly + BISER segdup output (for the segdup enrichment analysis)
 export DUP_BED="$PURGE_WORK_DIR/dups.bed"
