@@ -100,6 +100,13 @@ export COVERAGE_SHORT_R2="$DATA_DIR/sequencing-illumina/from-WGS-collaborator/SR
 export COVERAGE_HIFI_READS="$SCRATCH_DIR/hifi/male/*/*fastq.gz"
 export COVERAGE_OUT_DIR="$OUTPUT_DIR/outputs-from-read-coverage"
 
+# GenomeScope (KMC k-mer histogram -> genome size / heterozygosity / repeat estimate)
+export KMC_BIN="$TOOLSHED_DIR/kmc/bin/kmc"
+export KMC_TOOLS_BIN="$TOOLSHED_DIR/kmc/bin/kmc_tools"
+export GENOMESCOPE_READS="$DATA_DIR/sequencing-illumina/male/processed-reads/*fastq.gz"
+export GENOMESCOPE_OUT_DIR="$OUTPUT_DIR/outputs-from-genomeScope-kmc"
+export GENOMESCOPE_TEMP_DIR="$SCRATCH_DIR/temp-dir-fast"
+
 # =============================================================================
 # 03-genome-annotation — repeat masking + annotation inputs
 # =============================================================================
@@ -171,3 +178,10 @@ export POLISH_HIFI_READS="$SCRATCH_DIR/hifi/male/long-reads/*.fastq.gz"
 export POLISH_ILLUMINA_R1="$DATA_DIR/sequencing-illumina/male/processed-reads/nR184-L3-G3-P20-GATTCCTT-TGCCTATG-READ1-Sequences-trimmed.fastq.gz"
 export POLISH_ILLUMINA_R2="$DATA_DIR/sequencing-illumina/male/processed-reads/nR184-L3-G3-P20-GATTCCTT-TGCCTATG-READ2-Sequences-trimmed.fastq.gz"
 export POLISH_WORK_DIR="$OUTPUT_DIR/outputs-from-nextpolish2"
+
+# =============================================================================
+# 05-tandem-repeat-analysis — processing tools
+# =============================================================================
+export TRF_BIN="$TOOLSHED_DIR/TRF-4.09.1/build/src/trf"
+export CENTROANNO_DIR="$TOOLSHED_DIR/centroAnno"
+export HICAT_BIN="/tscc/projects/ps-renlab2/jhc103/miniconda3-storage/envs/toolshed-HiCAT/bin/hicat"
