@@ -7,11 +7,14 @@
 # GRCm39). Scaffolds with strong/complete synteny to an annotated sex chromosome
 # are sex-linked.
 #
-# Required helper scripts (expected in this directory, not yet in the repo):
+# Helper scripts (included in this directory):
 #   count_transcript.sh  make_seqid.sh  make_layout.sh  highlight_chrom.sh
-#   highlight_chrom1.sh  find_black.py
-# Required data files (expected in the working directory):
-#   GCF_000001635.27_GRCm39_genomic.gff  chrom_dict_mouse_GRC29.txt  blocks.layout
+#   highlight_chrom1.sh  find_block.py  find_microsynteny_block.py
+# Reference files (download from NCBI; not tracked in this repo):
+#   GCF_000001635.27_GRCm39_genomic.gff  (place under input/)
+#   GCF_000001635.27_GRCm39_genomic.fna
+# Small config files (included in this directory):
+#   chrom_dict_mouse_GRC29.txt  blocks.layout
 
 # Load shared configuration (config.sh at the repo root)
 _repo_root="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
@@ -56,7 +59,7 @@ python -m jcvi.graphics.karyotype seqids layout --figsize 14x10 --dpi 300 --o ka
 
 #### MICROSYNTENY ####
 python -m jcvi.compara.synteny mcscan mouse.bed mouse.degus.lifted.anchors --iter=1 -o mouse.degus.i1.blocks
-python find_black.py input/GCF_000001635.27_GRCm39_genomic.gff mouse.degus.i1.blocks App app_blocks.txt
+python find_block.py input/GCF_000001635.27_GRCm39_genomic.gff mouse.degus.i1.blocks App app_blocks.txt
 python -m jcvi.formats.bed merge mouse.bed degus.bed -o mouse_degus.bed
 # cp ../hifi022425scaf-GRCm38-mouse-degu/blocks.layout .   # context-specific layout reuse
 python -m jcvi.graphics.synteny app_blocks.txt mouse_degus.bed blocks.layout --glyphstyle=arrow --format png

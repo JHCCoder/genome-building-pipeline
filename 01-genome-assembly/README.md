@@ -31,5 +31,6 @@ cluster settings.
 
 - Scripts are Slurm batch scripts written for TSCC at UCSD. Adjust the
   `#SBATCH` scheduler lines for your own cluster.
-- `04-sexChr-identification/01-synteny-to-sex-chr/` requires helper scripts and
-  data files not yet included in this repo (see its header comment).
+- `04-sexChr-identification/01-synteny-to-sex-chr/` (JCVI/MCscan synteny to sex
+  chromosomes) includes its helper scripts; it also needs the mouse GRCm39
+  reference genome/GFF downloaded from NCBI (see its script header).
