@@ -2,7 +2,7 @@
 """
 Build a gene-family GFF and metadata table for all paralog families.
 
-Input:  hifiasm_041425_denovoEnhanced_peaks2utr_sorted_perfect.gff
+Input:  hifiasm-041425-denovoEnhanced_peaks2utr_sorted.agat.gff3 (final merged annotation)
 Output: paralog_families.gff       — gene features for all family members (parent + paralogs)
         paralog_families.tsv       — family metadata table
         paralog_families_summary.tsv — per-family summary counts
@@ -20,7 +20,7 @@ import sys
 from collections import defaultdict
 
 # Usage: python build_paralog_families.py [input.gff]  (default mirrors config.sh: PARALOG_GFF)
-GFF_IN = sys.argv[1] if len(sys.argv) > 1 else "/tscc/projects/ps-renlab2/jhc103/degu-genome-assembly-proj/data/denovo_OctDegus_genome/041425-assembly/hifiasm_041425_denovoEnhanced_peaks2utr_sorted_perfect.gff"
+GFF_IN = sys.argv[1] if len(sys.argv) > 1 else "/tscc/projects/ps-renlab2/jhc103/degu-genome-assembly-proj/code/command-line-script/annotation-merging/output/hifiasm-041425-denovoEnhanced_peaks2utr_sorted.agat.gff3"
 GFF_OUT = "paralog_families.gff"
 TSV_OUT = "paralog_families.tsv"
 SUMMARY_OUT = "paralog_families_summary.tsv"
