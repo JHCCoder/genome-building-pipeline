@@ -9,7 +9,9 @@ Many of the genome-assembly results are presented interactively in the **degu
 genome browser** — the final assembly, CENPA / H3K27ac BigWig signal tracks, the
 Hi-C contact matrix, and segdup / HOR / structural-error annotation tracks:
 
-**https://renlab.sdsc.edu/share/jhc103/degu-genome-browser/**
+<p align="center">
+  <a href="https://renlab.sdsc.edu/share/jhc103/degu-genome-browser/">degu genome browser</a>
+</p>
 
 <p align="center">
   <img src="genome_browser_overview.png" alt="Degus genome browser overview" width="550">
