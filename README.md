@@ -10,7 +10,7 @@ genome browser** — the final assembly, CENPA / H3K27ac BigWig signal tracks, t
 Hi-C contact matrix, and segdup / HOR / structural-error annotation tracks:
 
 <p align="center">
-  <a href="https://renlab.sdsc.edu/share/jhc103/degu-genome-browser/">degu genome browser</a>
+  <a href="https://renlab.sdsc.edu/share/jhc103/degu-genome-browser/">Octodon degus genome browser</a>
 </p>
 
 <p align="center">
