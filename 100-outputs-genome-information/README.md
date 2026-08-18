@@ -5,14 +5,6 @@ assembly (OctDeg2.0), kept separate from the pipeline code (stages `01–07`).
 Only reasonably-sized reports and text files are stored here; very large files
 are deposited in a data repository and referenced by accession.
 
-## Genome browser
-
-Many of these results are also presented interactively in the **degu genome
-browser** — the final assembly, CENPA / H3K27ac BigWig signal tracks, the Hi-C
-contact matrix, and the segdup / HOR / structural-error annotation tracks:
-
-**https://renlab.sdsc.edu/share/jhc103/degu-genome-browser/**
-
 ## The genome assembly itself is too large to commit
 
 The final assembly FASTA
