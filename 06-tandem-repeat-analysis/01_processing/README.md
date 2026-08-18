@@ -1,4 +1,4 @@
-# 05-tandem-repeat-analysis — processing
+# 06-tandem-repeat-analysis — processing
 
 Tools for detecting tandem repeats / centromeric higher-order repeats, numbered
 in the order they are run. This is the **processing** batch (the

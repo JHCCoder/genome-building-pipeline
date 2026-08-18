@@ -9,8 +9,8 @@ masking, and genome annotation — for the degu (*Octodon degus*).
 - `02-initial-genome-assembly-evaluation/` — initial assembly QC
 - `03-genome-annotation/` — repeat masking, transfer- and de novo-based annotation
 - `04-indepth-genome-assembly-assessment/` — in-depth assembly assessment
-- `05-tandem-repeat-analysis/` — tandem-repeat analysis
-- `06-segmental-duplication-analysis/` — segmental-duplication analysis
+- `06-tandem-repeat-analysis/` — tandem-repeat analysis
+- `07-segmental-duplication-analysis/` — segmental-duplication analysis
 - `useful-scripts/` — helper utilities
 
 ## Configuration

@@ -1,6 +1,23 @@
 Methods — structural-error detection with Inspector
 ====================================================
 
+Manuscript paragraph (with results)
+-----------------------------------
+
+As an additional, reference-free evaluation of assembly structure, we aligned all
+PacBio HiFi reads from male403 back to the chromosome-assigned scaffolded assembly
+and called structural errors with Inspector v1.3.1 (Chen et al. 2021). Inspector
+identified 62 structural errors genome-wide (classified as expansion, collapse,
+haplotype switch, or inversion) and a small-scale error rate of 17.18 errors per
+Mb, with an estimated consensus QV of 45.96, corroborating the high base accuracy
+reported by Merqury. Importantly, no structural errors were called within the
+124–134 Mb region on chromosome 4 that contains the HiCAT-annotated centromeric
+HOR block and the dominant CENP-A peak, providing independent evidence that this
+region reflects genuine centromeric sequence rather than a scaffolding artifact.
+The Inspector error calls are available as a track in the degu genome browser
+(https://renlab.sdsc.edu/share/jhc103/degu-genome-browser/).
+
+
 Ready-to-use paragraph
 ----------------------
 
@@ -51,6 +68,23 @@ Reported metrics
 - **QV** — Phred-scaled consensus quality of the assembly.
 - Reference-based mode additionally reports genome coverage, contig-to-reference
   collapse/expansion counts, and base-pair accuracy.
+
+
+chr4-specific results
+---------------------
+
+Chromosome 4 carries 4 structural errors, all classified as "Expansion" (no
+collapse, haplotype switch, or inversion), each small (53–229 bp):
+
+| Start | End | Type | Size (bp) | Supporting reads |
+|---|---|---|---|---|
+| 32,876,061 | 32,876,193 | Expansion | 132 | 30 |
+| 48,132,431 | 48,132,619 | Expansion | 188 | 20 |
+| 65,098,484 | 65,098,713 | Expansion | 229 | 16 |
+| 106,007,990 | 106,008,043 | Expansion | 53 | 18 |
+
+No structural errors were called on chr4 within the 124–134 Mb region that
+contains the HiCAT-annotated centromeric HOR block and the dominant CENP-A peak.
 
 
 Software

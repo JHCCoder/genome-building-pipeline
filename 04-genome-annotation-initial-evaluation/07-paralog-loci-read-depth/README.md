@@ -38,7 +38,7 @@ The figure has two panels:
 - **Gene annotation** (the *new* merged annotation, AGAT-normalized):
   `code/command-line-script/annotation-merging/output/hifiasm-041425-denovoEnhanced_peaks2utr_sorted.agat.gff3`.
   Step 1 reads it indirectly via the gene × segdup overlap table produced from it:
-  `06-segmental-duplication-analysis/04_segdup_gene_overlap.ipynb` →
+  `07-segmental-duplication-analysis/04_segdup_gene_overlap.ipynb` →
   `hifiasm_gene_segDup_overlapInfo_081726.tsv`. **Re-run that notebook after a
   new annotation before running step 1.**
 - **Segdups** (BISER BEDPE, `segdup_output_duplicateLinkRemoved.bedpe`) — used by

@@ -1,0 +1,32 @@
+# BUSCO version is: 5.7.1 
+# The lineage dataset is: glires_odb10 (Creation date: 2024-01-08, number of genomes: 24, number of BUSCOs: 13798)
+# Summarized benchmarking in BUSCO notation for file /tscc/projects/ps-renlab2/jhc103/degu-genome-assembly-proj/data/denovo_OctDegus_genome/041425-assembly/hifiasm-041425-assembly-mitoFiltered-scaffolded-curated-masked-chrNameAssigned/assembly_final.sorted.headerRenamed.chrAssigned.fasta
+# BUSCO was run in mode: euk_genome_min
+# Gene predictor used: miniprot
+
+	***** Results: *****
+
+	C:98.7%[S:90.1%,D:8.6%],F:0.7%,M:0.6%,n:13798,E:4.5%	   
+	13613	Complete BUSCOs (C)	(of which 616 contain internal stop codons)		   
+	12428	Complete and single-copy BUSCOs (S)	   
+	1185	Complete and duplicated BUSCOs (D)	   
+	94	Fragmented BUSCOs (F)			   
+	91	Missing BUSCOs (M)			   
+	13798	Total BUSCO groups searched		   
+
+Assembly Statistics:
+	288	Number of scaffolds
+	491	Number of contigs
+	3403620422	Total length
+	0.001%	Percent gaps
+	125 MB	Scaffold N50
+	50 MB	Contigs N50
+
+
+Dependencies and versions:
+	hmmsearch: 3.1
+	bbtools: 39.01
+	miniprot_index: 0.13-r248
+	miniprot_align: 0.13-r248
+	python: sys.version_info(major=3, minor=9, micro=19, releaselevel='final', serial=0)
+	busco: 5.7.1

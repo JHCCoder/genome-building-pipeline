@@ -1,4 +1,4 @@
-# 05-tandem-repeat-analysis — analysis
+# 06-tandem-repeat-analysis — analysis
 
 Analysis/visualization of the tandem-repeat results (Supplemental Figure S15).
 

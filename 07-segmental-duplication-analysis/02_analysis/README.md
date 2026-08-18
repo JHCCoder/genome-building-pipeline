@@ -1,4 +1,4 @@
-# 06-segmental-duplication-analysis
+# 07-segmental-duplication-analysis
 
 Detect segmental duplications (SDs) with BISER and produce the Figure 7 analysis
 (cumulative-length "pervasive" region, gene overlap, GO enrichment, pyCirclize

@@ -54,10 +54,10 @@ HERE = Path(__file__).resolve().parent
 
 # Gene x segdup overlap table, produced from the NEW merged annotation
 # (hifiasm-041425-denovoEnhanced_peaks2utr_sorted.agat.gff3) by
-# 06-segmental-duplication-analysis/04_segdup_gene_overlap.ipynb.
+# 07-segmental-duplication-analysis/04_segdup_gene_overlap.ipynb.
 # Re-run that notebook after a new annotation before running this script.
 GENE_FILE = (
-    f"{PROJ_ROOT}/code/github-code-to-share/06-segmental-duplication-analysis/"
+    f"{PROJ_ROOT}/code/github-code-to-share/07-segmental-duplication-analysis/"
     "hifiasm_gene_segDup_overlapInfo_081726.tsv"
 )
 

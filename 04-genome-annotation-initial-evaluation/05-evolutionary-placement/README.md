@@ -62,7 +62,7 @@ sbatch 05_raxml_phylogeny.sh
 ## Configuration
 
 Paths, conda environments, and the BUSCO lineage live in `config.sh` at the
-repository root (section "03-genome-annotation-initial-evaluation —
+repository root (section "04-genome-annotation-initial-evaluation —
 evolutionary-placement"). Each shell script sources it automatically; edit
 `config.sh` (not the scripts) for your environment.
 
