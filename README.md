@@ -27,7 +27,7 @@ Hi-C contact matrix, and segdup / HOR / structural-error annotation tracks:
 - `08-pyCirclize-plots/` — pyCirclize circos plots (genomic / tandem-repeat / segdup features)
 - `100-inputs-sequencing-reads/` — input data pointers (reads, assemblies, references, annotations)
 - `100-outputs-genome-information/` — generated genome information (BUSCO, Merqury, centroAnno, segdup, TRF, …)
-- `useful-scripts/` — helper utilities
+- `200-degu-genome-browser/` — static D3 degu genome browser (frontend + embedded segdup data)
 
 ## Configuration
 
