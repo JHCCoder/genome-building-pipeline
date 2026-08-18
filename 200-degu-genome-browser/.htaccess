@@ -1,0 +1,23 @@
+# Degu genome browser (static Apache build) — cache control.
+# Static data files (.bin/.seq/.json/.js) and index.html are replaced in-place
+# on data swaps, so browsers must always revalidate rather than serve stale
+# bytes. Because rsync -t preserves source mtimes, Apache's Last-Modified
+# reflects the new files: revalidation returns 200 for changed files, 304 for
+# unchanged ones. 304s are cheap, so this costs almost nothing at runtime.
+
+<IfModule mod_headers.c>
+  # Revalidate every request; never serve a stale copy after a swap.
+  <FilesMatch "\.(bin|seq|json|js|html)$">
+    Header set Cache-Control "no-cache, must-revalidate"
+  </FilesMatch>
+</IfModule>
+
+# Fallback if mod_headers is unavailable: same effect via mod_expires.
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType application/octet-stream "access"
+  ExpiresByType text/plain "access"
+  ExpiresByType application/json "access"
+  ExpiresByType text/javascript "access"
+  ExpiresByType text/html "access"
+</IfModule>
