@@ -198,3 +198,32 @@ export BISER_GENOME_LIST="$BISER_GENOME_DIR/genome_list7.txt"   # <assembly.fna>
 export TRF_BIN="$TOOLSHED_DIR/TRF-4.09.1/build/src/trf"
 export CENTROANNO_DIR="$TOOLSHED_DIR/centroAnno"
 export HICAT_BIN="/tscc/projects/ps-renlab2/jhc103/miniconda3-storage/envs/toolshed-HiCAT/bin/hicat"
+
+# =============================================================================
+# 03-… — synteny (ntSynt) + mashtree inputs
+# =============================================================================
+export ENV_PHYLO="evolutionary-tree"            # perl-BioPerl (mashtree) + FastME
+
+# mash / mashtree (Jaccard-distance tree ordering the synteny plot)
+export MASH_BIN="$TOOLSHED_DIR/mash-Linux64-v2.3/mash"
+export MASHTREE_DIR="$TOOLSHED_DIR/mash-Linux64-v2.3/mashtree"   # bin/{mashtree,mashtree_jackknife.pl,mashtree_bootstrap.pl}
+
+# ntSynt (synteny blocks) + ntSynt-viz (ribbon plot); both run in ENV_ASSESSMENT
+export NTSYNT_BIN="$TOOLSHED_DIR/ntSynt/bin/ntSynt"
+export NTSYNT_VIZ_BIN="$TOOLSHED_DIR/ntsynt-viz/ntSynt-viz-1.0.0/bin/ntsynt_viz.py"
+
+export SYNTENY_OUT_DIR="$OUTPUT_DIR/outputs-from-synteny"
+export SYNTENY_FASTA_LIST="$CODE_DIR/github-code-to-share/03-genome-annotation-initial-evaluation/06-mashTree-syntenic-evaluation/fasta_list.txt"
+export SYNTENY_NAME_CONVERSIONS="$CODE_DIR/github-code-to-share/03-genome-annotation-initial-evaluation/06-mashTree-syntenic-evaluation/name-conversions.tsv"
+export SYNTENY_TARGET_GENOME="Degus"
+
+# =============================================================================
+# 03-genome-annotation-initial-evaluation — evolutionary-placement inputs
+# =============================================================================
+# BUSCO (genome mode, --metaeuk) runs reuse ENV_BUSCO (toolshed-busco) and
+# ENV_BUSCO_LINEAGE defined below. The tree itself is built with MAFFT + trimAl
+# + RAxML in the evolutionary-tree env.
+export ENV_EVOLUTIONARY_TREE="evolutionary-tree"   # /tscc/.../miniconda3-storage/envs/evolutionary-tree (MAFFT 7.526, RAxML 8.2.12)
+export EVO_OUT_DIR="$OUTPUT_DIR/outputs-from-evolutionary-placement"
+export EVO_BUSCO_LINEAGE="euarchontoglires_odb12"  # BUSCO lineage for the species tree (auto-downloaded on first run)
+export EVO_SPECIES_LIST="$CODE_DIR/github-code-to-share/03-genome-annotation-initial-evaluation/05-evolutionary-placement/species_list.tsv"
