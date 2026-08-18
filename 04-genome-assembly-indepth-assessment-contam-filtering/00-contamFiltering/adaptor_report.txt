@@ -1,2 +1,0 @@
-#accession	length	action	range	name
-ptg000006l	31179387	ACTION_TRIM	27178127..27178151	CONTAMINATION_SOURCE_TYPE_ADAPTOR:NGB00759.1:Illumina TruSeq DNA HT and RNA HT i7 index D705 adapter (Oligonucleotide sequence copyright 2007-2012 Illumina, Inc. All rights reserved.)

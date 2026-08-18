@@ -141,7 +141,7 @@ export BLAST_DB_DIR="/tscc/nfs/home/jhc103/ps-renlab2-link/degu-genome-assembly-
 export INTERPROSCAN_BIN="$TOOLSHED_DIR/interproscan/interproscan-5.74-105.0/interproscan.sh"
 
 # =============================================================================
-# 04-genome-assembly-indepth-assessment-contam-filtering — purge_dup inputs
+# 05-genome-assembly-indepth-assessment-contam-filtering — purge_dup inputs
 # =============================================================================
 export ENV_ASSESSMENT="genome-assembly-assessment"
 export PURGE_DUPS_BIN="$TOOLSHED_DIR/purge_dups/bin"
@@ -159,7 +159,7 @@ export BISER_BEDPE="$CODE_DIR/command-line-script/genome-annotation/biser/hifias
 export ASSEMBLY_MITO_FA="$PROJ_ROOT/degu-genome-browser-pythonVersion/assembly_final.sorted.headerRenamed.chrAssigned.mito.fasta"
 
 # =============================================================================
-# 04-… — paralog read-depth screen inputs
+# 05-… — paralog read-depth screen inputs
 # =============================================================================
 export ENV_TRANSCRIPTOME_MAPPING="transcriptome-mapping"
 export READ_DEPTH_ASSEMBLY="$DATA_DIR/denovo_OctDegus_genome/041425-assembly/hifiasm-041425-assembly-mitoFiltered-scaffolded-curated-masked-chrNameAssigned-contamFiltered/assembly_final.sorted.headerRenamed.chrAssigned.contamFiltered.fasta"
@@ -180,7 +180,7 @@ export POLISH_ILLUMINA_R2="$DATA_DIR/sequencing-illumina/male/processed-reads/nR
 export POLISH_WORK_DIR="$OUTPUT_DIR/outputs-from-nextpolish2"
 
 # =============================================================================
-# 06-segmental-duplication-analysis — BISER inputs
+# 07-segmental-duplication-analysis — BISER inputs
 # =============================================================================
 # BISER (user-level pip install); ENV_GENOME_ANNOTATION supplies samtools
 export BISER_BIN="$HOME/.local/bin/biser"
@@ -193,14 +193,14 @@ export BISER_GENOME_DIR="$DATA_DIR/genome-related-species"      # multi-species 
 export BISER_GENOME_LIST="$BISER_GENOME_DIR/genome_list7.txt"   # <assembly.fna>\t<species>
 
 # =============================================================================
-# 05-tandem-repeat-analysis — processing tools
+# 06-tandem-repeat-analysis — processing tools
 # =============================================================================
 export TRF_BIN="$TOOLSHED_DIR/TRF-4.09.1/build/src/trf"
 export CENTROANNO_DIR="$TOOLSHED_DIR/centroAnno"
 export HICAT_BIN="/tscc/projects/ps-renlab2/jhc103/miniconda3-storage/envs/toolshed-HiCAT/bin/hicat"
 
 # =============================================================================
-# 03-… — synteny (ntSynt) + mashtree inputs
+# 04-… — synteny (ntSynt) + mashtree inputs
 # =============================================================================
 export ENV_PHYLO="evolutionary-tree"            # perl-BioPerl (mashtree) + FastME
 
@@ -213,12 +213,12 @@ export NTSYNT_BIN="$TOOLSHED_DIR/ntSynt/bin/ntSynt"
 export NTSYNT_VIZ_BIN="$TOOLSHED_DIR/ntsynt-viz/ntSynt-viz-1.0.0/bin/ntsynt_viz.py"
 
 export SYNTENY_OUT_DIR="$OUTPUT_DIR/outputs-from-synteny"
-export SYNTENY_FASTA_LIST="$CODE_DIR/github-code-to-share/03-genome-annotation-initial-evaluation/06-mashTree-syntenic-evaluation/fasta_list.txt"
-export SYNTENY_NAME_CONVERSIONS="$CODE_DIR/github-code-to-share/03-genome-annotation-initial-evaluation/06-mashTree-syntenic-evaluation/name-conversions.tsv"
+export SYNTENY_FASTA_LIST="$CODE_DIR/github-code-to-share/04-genome-annotation-initial-evaluation/06-mashTree-syntenic-evaluation/fasta_list.txt"
+export SYNTENY_NAME_CONVERSIONS="$CODE_DIR/github-code-to-share/04-genome-annotation-initial-evaluation/06-mashTree-syntenic-evaluation/name-conversions.tsv"
 export SYNTENY_TARGET_GENOME="Degus"
 
 # =============================================================================
-# 03-genome-annotation-initial-evaluation — evolutionary-placement inputs
+# 04-genome-annotation-initial-evaluation — evolutionary-placement inputs
 # =============================================================================
 # BUSCO (genome mode, --metaeuk) runs reuse ENV_BUSCO (toolshed-busco) and
 # ENV_BUSCO_LINEAGE defined below. The tree itself is built with MAFFT + trimAl
@@ -226,4 +226,27 @@ export SYNTENY_TARGET_GENOME="Degus"
 export ENV_EVOLUTIONARY_TREE="evolutionary-tree"   # /tscc/.../miniconda3-storage/envs/evolutionary-tree (MAFFT 7.526, RAxML 8.2.12)
 export EVO_OUT_DIR="$OUTPUT_DIR/outputs-from-evolutionary-placement"
 export EVO_BUSCO_LINEAGE="euarchontoglires_odb12"  # BUSCO lineage for the species tree (auto-downloaded on first run)
-export EVO_SPECIES_LIST="$CODE_DIR/github-code-to-share/03-genome-annotation-initial-evaluation/05-evolutionary-placement/species_list.tsv"
+export EVO_SPECIES_LIST="$CODE_DIR/github-code-to-share/04-genome-annotation-initial-evaluation/05-evolutionary-placement/species_list.tsv"
+
+# =============================================================================
+# 02-genome-assembly-initial-evaluation — Hi-C contact-map visualization
+# =============================================================================
+export ENV_HICEXPLORER="toolshed-HiCExplorer"   # hicBuildMatrix / hicPlotMatrix / hicPCA / hicMerge*
+export ENV_SAMTOOLS="toolshed-samtools"         # samtools + sambamba
+
+# Genome + restriction sites used for Hi-C matrix building (HiCExplorer)
+export HIC_GENOME="$DATA_DIR/denovo_OctDegus_genome/041425-assembly/hifiasm-041425-assembly-mitoFiltered-scaffolded-curated-masked-chrNameAssigned/assembly_final.sorted.headerRenamed.chrAssigned.fasta"
+export HIC_RESTRICTION_BED="$PROJ_ROOT/figure/hic-plot/041425_assembly_GATC.bed"   # hicFindRestSite --fasta $HIC_GENOME --searchPattern GATC -o ...
+export HIC_OUT_DIR="$PROJ_ROOT/figure/hic-plot"                                    # working/output dir (matrices, plots)
+export HIC_HIFI_READ_DIR="$CODE_DIR/command-line-script/haphic/input-hic-read"    # HiFi Hi-C fastq
+export HIC_SHORTREAD_DIR="$DATA_DIR/sequencing-illumina/from-WGS-collaborator"    # Illumina Hi-C fastq
+
+# =============================================================================
+# 05-… — structural-error detection (Inspector) inputs
+# =============================================================================
+export ENV_INSPECTOR="toolshed-inspector"          # inspector.py + minimap2 + samtools
+export INSPECTOR_BIN="$TOOLSHED_DIR/Inspector/inspector.py"
+export INSPECTOR_ASM="$MITO_ASSEMBLY"              # scaffolded, chr-assigned, mito-added assembly
+export INSPECTOR_HIFI_READS="$SCRATCH_DIR/hifi/male/*/*fastq.gz"   # unquoted in the script to expand the glob
+export INSPECTOR_REF="$DATA_DIR/OctDegus1_genome/OctDeg1/fasta/genome.fa"  # optional reference (reference-based mode)
+export INSPECTOR_OUT_DIR="$OUTPUT_DIR/outputs-from-inspector"

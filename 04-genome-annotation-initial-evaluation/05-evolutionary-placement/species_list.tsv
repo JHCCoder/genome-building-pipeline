@@ -1,0 +1,22 @@
+# Evolutionary-placement species list — one <genome.fna>	<tree_label> per line.
+# Comments (lines starting with "#") and blank lines are ignored.
+#
+# tree_label is written into every downstream FASTA/alignment header and the final
+# tree, so keep labels <= 10 characters, unique, and free of whitespace (RAxML's
+# relaxed-PHYLIP name limit). The first column is the genome assembly used as the
+# BUSCO "-i" input; edit the paths to match your data.
+#
+# This default set reproduces the paper's "related rodent species" plus dog and
+# human outgroups (see data/genome-related-species/genome_list6.txt). degu is the
+# focal species.
+/tscc/projects/ps-renlab2/jhc103/degu-genome-assembly-proj/data/denovo_OctDegus_genome/041425-assembly/hifiasm-041425-assembly-mitoFiltered-scaffolded-curated-masked-chrNameAssigned/assembly_final.sorted.headerRenamed.chrAssigned.mito.fasta	degu
+/tscc/projects/ps-renlab2/jhc103/degu-genome-assembly-proj/data/genome-related-species/GCF_000001635.27_GRCm39_genomic.fna	mouse
+/tscc/projects/ps-renlab2/jhc103/degu-genome-assembly-proj/data/genome-related-species/GCF_021218885.2_Marmota_monax_Labrador192_F-V1.1_genomic.fna	groundhog
+/tscc/projects/ps-renlab2/jhc103/degu-genome-assembly-proj/data/genome-related-species/GCF_020740685.1_mJacJac1.mat.Y.cur_genomic.fna	jerboa
+/tscc/projects/ps-renlab2/jhc103/degu-genome-assembly-proj/data/genome-related-species/GCA_030556225.1_Psun-UiT-1_genomic.fna	hamster
+/tscc/projects/ps-renlab2/jhc103/degu-genome-assembly-proj/data/genome-related-species/GCA_029890205.1_ASM2989020v1_genomic.fna	spiny_rat
+/tscc/projects/ps-renlab2/jhc103/degu-genome-assembly-proj/data/genome-related-species/GCA_944319725.1_Naked_mole-rat_paternal_genomic.fna	mole_rat
+/tscc/projects/ps-renlab2/jhc103/degu-genome-assembly-proj/data/genome-related-species/GCF_000276665.1_ChiLan1.0_genomic.fna	chinchilla
+/tscc/projects/ps-renlab2/jhc103/degu-genome-assembly-proj/data/genome-related-species/GCF_036323735.1_GRCr8_genomic.fna	rat
+/tscc/projects/ps-renlab2/jhc103/degu-genome-assembly-proj/data/genome-related-species/GCF_000002285.5_Dog10K_Boxer_Tasha_genomic.fna	dog
+/tscc/projects/ps-renlab2/jhc103/degu-genome-assembly-proj/data/genome-related-species/GCF_000001405.40_GRCh38.p14_genomic.fna	human

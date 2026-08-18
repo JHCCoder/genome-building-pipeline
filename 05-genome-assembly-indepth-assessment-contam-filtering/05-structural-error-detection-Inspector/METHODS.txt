@@ -1,0 +1,62 @@
+Methods — structural-error detection with Inspector
+====================================================
+
+Ready-to-use paragraph
+----------------------
+
+Assembly structural errors and small-scale errors were evaluated with Inspector
+v1.3.1, a reference-free assembly evaluator, by aligning the PacBio HiFi reads to
+the chromosome-assigned assembly and using read-depth and split-read signatures to
+call errors. Inspector was run with `inspector.py -c <assembly.fa> -r <hifi.fastq.gz>
+-o <out> --datatype hifi -t 8`; a parallel reference-based run added `--ref` against
+the OctDeg1 reference genome. From the resulting report we recorded the structural
+errors (classified as expansion, collapse, haplotype switch, or inversion),
+small-scale errors per megabase, and the Phred-scaled consensus quality value (QV).
+
+
+Commands
+--------
+
+Reference-free (primary run):
+    inspector.py -c assembly_final.sorted.headerRenamed.chrAssigned.mito.fasta \
+        -r <hifi_reads.fastq.gz> \
+        -o <out_dir> --datatype hifi -t 8
+
+Reference-based (optional, adds contig-to-reference metrics):
+    inspector.py -c <assembly.fa> -r <hifi_reads.fastq.gz> \
+        --ref data/OctDegus1_genome/OctDeg1/fasta/genome.fa \
+        -o <out_dir> --datatype hifi -t 8
+
+
+Inputs
+------
+
+- `-c / --contig`    the assembly FASTA (scaffolded, chromosome-assigned, mito-added;
+                     OctDeg2.0).
+- `-r / --read`      PacBio HiFi reads (FASTQ).
+- `--ref`            OctDeg1 reference genome (reference-based mode only).
+- `-d / --datatype`  `hifi` (PacBio HiFi; also `clr`, `nanopore`).
+- `-t / --thread`    8 threads.
+
+
+Reported metrics
+----------------
+
+- **Contig statistics** — number/length of contigs, longest, N50, total length.
+- **Read-to-contig alignment** — mapping rate (%), split-read rate (%), mean depth.
+- **Structural errors** — large mis-assemblies, classified as expansion, collapse,
+  haplotype switch, or inversion (thresholds: contig > 1 Mb, error size 50 bp–4 Mb).
+- **Small-scale errors** — base substitutions, small-scale expansions/collapses,
+  reported per Mbp and in total.
+- **QV** — Phred-scaled consensus quality of the assembly.
+- Reference-based mode additionally reports genome coverage, contig-to-reference
+  collapse/expansion counts, and base-pair accuracy.
+
+
+Software
+--------
+
+- Inspector v1.3.1 — a reference-free assembly evaluator
+  (Chen, Zhang, Wang, Gao, Chong. "Accurate long-read de novo assembly evaluation
+  with Inspector." Genome Biology 22:312, 2021; https://github.com/ChongLab/Inspector).
+- Run in the `toolshed-inspector` conda environment (Python, pysam, minimap2, samtools).

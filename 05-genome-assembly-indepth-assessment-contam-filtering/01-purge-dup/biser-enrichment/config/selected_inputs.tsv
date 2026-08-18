@@ -1,0 +1,5 @@
+input_type	path	description	format	n_records
+purge_dups	/tscc/projects/ps-renlab2/jhc103/degu-genome-assembly-proj/output/outputs-from-purge-duplicate/hifiasm-041425-scaffolded-assembly/dups.bed	5-column BED with category labels (HAPLOTIG,HIGHCOV,JUNK,OVLP,REPEAT)	BED5	245
+biser	/tscc/projects/ps-renlab2/jhc103/degu-genome-assembly-proj/code/command-line-script/genome-annotation/biser/hifiasm-041425/segdup_output_mod.bedpe	Simplified 6-column BEDPE (chr1,start1,end1,chr2,start2,end2)	BEDPE6	208156
+assembly	/tscc/projects/ps-renlab2/jhc103/degu-genome-assembly-proj/degu-genome-browser-pythonVersion/assembly_final.sorted.headerRenamed.chrAssigned.mito.fasta	Final chromosome-assigned assembly with mito	FASTA	289
+assembly_fai	/tscc/projects/ps-renlab2/jhc103/degu-genome-assembly-proj/degu-genome-browser-pythonVersion/assembly_final.sorted.headerRenamed.chrAssigned.mito.fasta.fai	FASTA index for the assembly	FAI	289
