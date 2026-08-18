@@ -11,6 +11,10 @@ Hi-C contact matrix, and segdup / HOR / structural-error annotation tracks:
 
 **https://renlab.sdsc.edu/share/jhc103/degu-genome-browser/**
 
+<p align="center">
+  <img src="genome_browser_overview.png" alt="Degus genome browser overview" width="800">
+</p>
+
 ## Repository layout
 
 - `01-genome-assembly/` — assembly (hifiasm), Hi-C preprocessing, scaffolding (HapHiC), mitochondrial filtering, sex-chromosome identification
