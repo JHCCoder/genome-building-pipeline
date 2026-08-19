@@ -1,0 +1,9 @@
+samples	genome	Median genes per cell
+7000_PFC	octDeg2	3021
+7000_PFC	octDeg1	2891
+181_dHIP	octDeg2	1379
+181_dHIP	octDeg1	1312
+6997_dHIP	octDeg2	1443
+6997_dHIP	octDeg1	1360
+181_PFC	octDeg2	2673
+181_PFC	octDeg1	2559

@@ -1,0 +1,9 @@
+samples	genome	Median high quality fragment per cell
+7000_PFC	octDeg2	17189
+7000_PFC	octDeg1	16828
+181_dHIP	octDeg2	14720
+181_dHIP	octDeg1	14156
+6997_dHIP	octDeg2	13920
+6997_dHIP	octDeg1	13412
+181_PFC	octDeg2	16295
+181_PFC	octDeg1	15789
