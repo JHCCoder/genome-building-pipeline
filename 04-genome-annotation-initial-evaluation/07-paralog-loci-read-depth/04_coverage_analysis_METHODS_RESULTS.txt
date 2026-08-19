@@ -1,0 +1,112 @@
+================================================================================
+Supplemental Figure S7 — HiFi read-coverage analysis: paralogs vs single-copy genes
+(04_coverage_analysis.ipynb)
+Generated 2026-08-18
+================================================================================
+
+PURPOSE
+--------------------------------------------------------------------------------
+Distinguish genuine paralogs from uncollapsed haplotypes ("haplotigs") by
+comparing PacBio HiFi read coverage. Genuine paralogs should show normal
+diploid coverage (~36x for primary HiFi reads), whereas a haplotig — an
+uncollapsed second copy of a single diploid locus — should show roughly HALF
+(<= ~17-18x) coverage, because reads from one diploid locus are split between
+two redundant assembled copies.
+
+--------------------------------------------------------------------------------
+METHODS
+--------------------------------------------------------------------------------
+Locus definition and coverage.
+  Regions were defined as each annotated gene body +/- 5 kb flanking sequence,
+  for 26,260 nuclear genes (from the merged AGAT GFF,
+  hifiasm-041425-denovoEnhanced_peaks2utr_sorted.agat.gff3) plus 12,428 BUSCO
+  single-copy orthologs (glires_odb10), for a total of 38,688 regions. Mean
+  per-region HiFi read depth was computed with mosdepth.
+
+Per-chromosome normalization.
+  Because the X and Y chromosomes are hemizygous in males, raw read depth on
+  chrX and chrY is ~half the autosomal depth. To make coverage comparable
+  across the genome, depth was normalized per chromosome by rescaling each
+  chromosome class to the autosomal baseline:
+
+      mean_depth_chr_norm = mean_depth * (C_autosomal / C_class)
+
+  where C_autosomal is the genome-wide autosomal median depth (33.65x) and
+  C_class is the median depth of that chromosome class (chrX = 19.47x, scale
+  factor x1.728; chrY = 21.12x, scale factor x1.593). After normalization,
+  chrX/chrY run at 33.65x, matching autosomes. (Small unplaced scaffolds
+  seq31/seq200 were left uncorrected, consistent with the baseline-estimation
+  routine.) The violin/density plots use mean_depth_chr_norm; the reference
+  line is drawn at the 33.6x autosomal baseline.
+
+Gene grouping (tiers).
+  Genes were partitioned into four groups based on paralogy and overlap with
+  segmental duplications (segdups), plus BUSCO orthologs as an independent
+  single-copy control:
+
+      G1 / T4 = singleton, NOT in segdup   (n = 15,330)  cleanest single-copy control
+      G2 / T1 = paralog,  NOT in segdup    (n =    533)
+      G3 / T3 = singleton, in segdup       (n =  8,749)
+      G4 / T2 = paralog,  in segdup        (n =  1,648)
+      BUSCO   = single-copy orthologs      (n = 12,428)  independent control
+
+  Paralogs were defined by the strict copy-number rule (base gene name
+  appearing >1x in the annotation): 2,181 paralog copies in 1,091 families.
+
+Statistical tests.
+  Two-sided Mann-Whitney U tests with Cliff's delta (delta) effect size, on
+  mean_depth_chr_norm. Significance: * p<0.05, ** p<0.01, *** p<0.001,
+  **** p<0.0001.
+
+--------------------------------------------------------------------------------
+RESULTS
+--------------------------------------------------------------------------------
+Summary statistics (mean_depth_chr_norm):
+
+  Group            N        Median   Mean    Std     Q1      Q3
+  ----            ----      ------   ----    ---     ---     ---
+  G2 paralog      533       34.64    34.79   9.24    29.12   40.54
+  G4 paralog+seg  1,648     35.81    35.80   8.82    29.89   41.42
+  G3 singleton+seg 8,749    36.04    35.74   7.64    30.62   41.06
+  G1 singleton    15,330    32.72    33.27   8.24    27.32   38.83
+  BUSCO           12,428    32.72    33.11   7.76    27.41   38.70
+
+Pairwise comparisons (Mann-Whitney U, Cliff's delta):
+
+  G1 (singleton) vs G2 (paralog), both outside segdups:
+      p = 9.12e-06 (****),  delta = +0.113
+      -> paralogs are slightly but significantly HIGHER than single-copy controls
+
+  G3 (singleton) vs G4 (paralog), both within segdups:
+      p = 0.555 (ns),  delta = +0.009
+      -> within segmental duplications, paralog and singleton coverage are
+         indistinguishable
+
+  (G1+G2) outside segdups vs (G3+G4) within segdups:
+      p = 1.14e-145 (****),  delta = -0.187
+      -> genes inside segmental duplications have higher coverage than those
+         outside, consistent with true duplication
+
+--------------------------------------------------------------------------------
+INTERPRETATION
+--------------------------------------------------------------------------------
+Paralogs show FULL diploid HiFi coverage, not the ~half coverage expected of
+uncollapsed haplotypes:
+
+  - Paralogs (G2 and G4) run at mean 34.8x and 35.8x, respectively — at or
+    slightly ABOVE the 33.6x autosomal baseline and ABOVE the single-copy
+    controls (G1 = 33.3x, BUSCO = 33.1x). A haplotig would instead be expected
+    at <= ~17x (half coverage).
+
+  - Paralogs outside segmental duplications are actually slightly (but
+    significantly) HIGHER in coverage than single-copy controls (delta = +0.11,
+    p = 9.1e-06) — the opposite of the haplotig prediction.
+
+  - No paralog group shows reduced coverage. The elevation of coverage within
+    segmental-duplication regions (delta = -0.19) is consistent with these
+    being genuine duplicated sequence.
+
+CONCLUSION: the annotated paralog set represents genuine duplicated loci, not
+uncollapsed haplotypes. Haplotype-collapse artifacts would be visible as
+~half-depth coverage, which is not observed for any paralog group.
+================================================================================
