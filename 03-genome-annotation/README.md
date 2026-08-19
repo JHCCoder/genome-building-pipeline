@@ -13,6 +13,7 @@ Two parallel tracks — a **transfer-based** (Liftoff) and a **de-novo**
 | 3 | Transfer-based annotation (Liftoff) | `03-transferBased-geneAnnotation/lift_off.sh` |
 | 4 | De-novo annotation (Braker3) | `04-denovoBased-geneAnnotation/` |
 | 5 | Merge the two annotations | `05-annotation-merging/` |
+| 6 | 3′ UTR annotation + finalize (peaks2utr + AGAT) | `06-annotation-enhancement-peaks2utr-agat/` |
 
 ### De-novo track (`04-denovoBased-geneAnnotation/`)
 
@@ -37,7 +38,8 @@ settings.
 ## Requirements
 
 - Conda environments: `toolshed-repeatmodeler`, `toolshed-liftoff`,
-  `genome-annotation`.
+  `genome-annotation`, `toolshed-peaks2utr`, `toolshed-agat`,
+  `toolshed-deeptools`.
 - Singularity (`singularitypro/3.11`) for the Braker3 image `braker3.sif`.
 - Tools (via `TOOLSHED_DIR`): RepeatModeler/Masker, Liftoff, HISAT2, samtools,
   Braker3, BLAST+, InterProScan.
@@ -47,3 +49,5 @@ settings.
 - Scripts are Slurm batch scripts written for TSCC at UCSD; adjust the `#SBATCH`
   scheduler lines for your own cluster.
 - `05-annotation-merging/` is a standalone Python tool (see its own README).
+- `06-annotation-enhancement-peaks2utr-agat/` reuses the `src/` GFF3 helpers
+  from `05-annotation-merging/` (see its own README).

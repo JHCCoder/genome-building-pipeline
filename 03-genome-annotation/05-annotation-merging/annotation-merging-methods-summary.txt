@@ -1,0 +1,238 @@
+================================================================================
+GENE ANNOTATION MERGING & FINALIZATION — METHODS SUMMARY
+Octodon degus genome annotation (degu / Octodon degus)
+================================================================================
+
+WHAT THIS COVERS
+----------------
+The final gene set was produced by merging two independent annotations and then
+restoring UTR features and cleaning the GFF3 structure. This document summarizes
+the full workflow from the two input annotations to the final annotation file.
+
+FINAL OUTPUT FILE
+-----------------
+  .../annotation-merging/output/hifiasm-041425-denovoEnhanced_peaks2utr_sorted.agat.gff3
+
+Final annotation composition (from the AGAT-normalized file):
+  genes          = 26,273
+  mRNAs          = 45,129
+  CDS            = 488,436
+  exons          = 531,326
+  introns        = 2,637
+  5' UTRs        = 61,322
+  3' UTRs        = 41,673
+  start_codons   = 1,576
+  stop_codons    = 1,497
+
+
+================================================================================
+STEP 0 — TWO INPUT ANNOTATIONS
+================================================================================
+
+1. Reference-transferred annotation (Liftoff)
+   - Genes lifted from the reference degu genome (OctDeg1.0 / GCF_000260255.1)
+     onto the degu assembly (hifiasm-041425, scaffolded + chr-assigned + mito)
+     using Liftoff.
+   - High-quality reference-derived gene models, but cannot discover genes
+     absent from the reference.
+
+2. De-novo annotation (Braker3)
+   - Braker3 gene prediction using RNA-seq evidence.
+   - Functional gene names assigned by BLAST (UniProt / NR) + InterProScan
+     protein-domain evidence, carried in the GFF3 "Name=" attribute.
+   - More error-prone gene structures, but can discover genes absent from the
+     reference.
+
+The merge keeps the reference-derived (Liftoff) annotation by default and only
+incorporates de-novo (Braker3) genes under explicit, conservative conditions.
+
+
+================================================================================
+STEP 1 — BUILD THREE CURATED GENE LISTS (list-building notebooks)
+================================================================================
+
+Three curated lists were built (in code/.../annotation-merging/list-building/)
+from the two annotations, using CDS-overlap, expression and length evidence:
+
+1. RENAME list (gene_LOC_nameChange_unique.tsv)
+   - Rename an unannotated "LOC##########" Liftoff gene to a de-novo gene name
+     when the two are the SAME locus.
+   - Criterion: >= 90% same-strand CDS overlap (fraction of the LOC CDS covered),
+     with UNIQUE 1:1 congruence in both directions.
+   - Paralogs are suffixed -l1, -l2, ...
+
+2. REPLACE list (gene_LOC_replace_unique.tsv)
+   - Replace MULTIPLE Liftoff "LOC" genes with a SINGLE de-novo gene when that
+     de-novo gene is a better model of a locus Liftoff split into several pieces.
+   - Criterion: the de-novo CDS is congruent (>= 90% same-strand overlap) with
+     the CDS of several LOC genes.
+   - Paralogs are suffixed -rl1, -rl2, ...
+
+3. ADD list (gene_gBraker_toAdd_unique.tsv)
+   - Add a de-novo gene ABSENT from Liftoff as a novel gene, when it satisfies
+     ALL THREE criteria:
+       (i)  no same-strand CDS overlap with any Liftoff gene;
+       (ii) CDS length >= 60% of its same-named mouse (GRCm39 / mm39) homolog;
+       (iii) expressed (mean RNA-seq BigWig signal over the CDS > 0).
+   - Paralogs are suffixed -dl1, -dl2, ...
+
+(The rename/replace notebooks take AGAT-preprocessed, sorted input GFFs:
+"hifiasm-041425-scaffolded-chrAssigned-mito_agatProcessed.gff" and
+"braker_3UTRincluded_agatProcessed.gff".)
+
+
+================================================================================
+STEP 2 — MERGE THE ANNOTATIONS (merge_annotations.py, list mode)
+================================================================================
+
+The two annotations are merged by applying three rules, keeping the Liftoff
+(reference) annotation by default:
+
+1. NAME-CHANGE   : rename a LOC Liftoff gene to the de-novo name (rename list);
+                  the Liftoff gene structure is kept, only Name=/ID= change.
+
+2. REPLACE       : replace a Liftoff gene with a de-novo gene (replace list).
+   Concordance fix: a Liftoff gene is only replaced when it is an unannotated
+   LOC, OR when the de-novo name is concordant (case/suffix-insensitive) with
+   the Liftoff gene's own name. A NAMED Liftoff gene whose name DIFFERS from the
+   replacing de-novo gene (a discordant paralog locus) is KEPT, never dropped.
+
+3. ADD (novel)   : add a de-novo gene that is in the curated add list and whose
+                  CDS does not overlap any retained Liftoff gene's CDS.
+
+4. UNIQUE NAMING (post-processing):
+   Every gene name is made unique. Within a gene family, the plain parent name
+   is assigned by evidence priority:
+     1) a replace-introduced de-novo gene whose replacement was concordant;
+     2) a gene renamed by the name-change rule;
+     3) a kept Liftoff copy;
+     4) a de-novo (added) gene.
+   All other copies are paralogs, suffixed by evidence class:
+     -RL  (replace copy),  -L  (renamed paralog),  -DL  (de-novo copy),
+     -L   (kept Liftoff paralog)  — numbered sequentially by genomic order.
+
+MERGE RESULT (from the merge report):
+  Liftoff genes:
+    replaced (LOC rule)             :    20
+    replaced (concordant)           :   284
+    renamed (name-change rule)      : 2,185
+    kept (discordant name, fix)     :     5
+  De-novo genes:
+    added as novel                  : 1,310
+    placed via replace              :   304
+  Final gene count                  : 26,273  (= 24,805 Liftoff + 1,468 de-novo)
+
+
+================================================================================
+STEP 3 — 3' UTR ANNOTATION (peaks2utr)
+================================================================================
+
+The merged GFF carries gene models but no UTR features. 3' UTRs are annotated
+with peaks2utr from RNA-seq coverage peaks:
+
+  peaks2utr <input.gff3> merged.bam \
+      --do-pseudo --keep-cache --extend-utr -p 8 --max-distance 1500 \
+      -o <output.gff3>
+
+Important notes:
+  - peaks2utr generates ONLY 3' UTRs. 5' UTRs are carried through from its
+    input GFF, never created by peaks2utr itself.
+  - Only the ~95 "changed" genes (genes whose CDS span differed from the
+    previous annotation) were re-run through peaks2utr (a subset re-run);
+    unchanged genes reused the 5'/3' UTRs from the previous full peaks2utr run.
+
+
+================================================================================
+RNA-SEQ (scMultiome) DATA USED — expression + 3' UTR evidence
+================================================================================
+
+The RNA-seq evidence came from 10x Genomics Single-Cell Multiome
+(scMultiome ATAC + Gene Expression) libraries (Cell Ranger ARC) generated from
+degu brain tissue.
+Source: /tscc/projects/ps-renlab2/nzemke/multiome/degu/cellranger/
+
+Four Gene Expression (GEX) BAMs were merged (samtools merge) into a single
+"merged.bam" that peaks2utr consumed:
+
+  1. 181_dHIP   — degu 181, dorsal hippocampus (dHIP)
+  2. 181_PFC    — degu 181, prefrontal cortex (PFC)
+  3. 6997_dHIP  — degu 6997, dorsal hippocampus (dHIP)
+  4. 7000_PFC   — degu 7000, prefrontal cortex (PFC)
+
+i.e. two brain regions (prefrontal cortex, PFC, and dorsal hippocampus, dHIP)
+across three animals (181, 6997, 7000), with animal 181 contributing both
+regions. (Confirmed by the merged.bam read-group header, which lists exactly
+these four sample names.)
+
+The scMultiome GEX data was used twice in this pipeline:
+  - as EXPRESSION evidence: "merged.bw" (a bamCoverage BigWig of merged.bam)
+    used for the "add novel genes" filter in STEP 1 (mean BigWig signal > 0);
+  - as 3' UTR evidence: "merged.bam" used by peaks2utr in STEP 3.
+
+Note: the de-novo Braker input annotation (braker_peak2utr.gff3) was itself
+peaks2utr-annotated with a 2-sample subset (7000 PFC + 181 dHIP); the FINAL
+full-annotation peaks2utr run used the 4-sample merged.bam listed above.
+
+
+================================================================================
+STEP 4 — REASSEMBLE MODELS + UTRs (assemble_final.py)
+================================================================================
+
+Combine the merged gene models with UTR features:
+  - unchanged genes take their UTRs from the previous full peaks2utr output;
+  - changed genes take their UTRs from the fresh peaks2utr subset output.
+UTR "Parent" attributes are re-keyed onto the merged transcript IDs in order of
+confidence: direct transcript-ID match -> CDS-span match -> single-transcript
+fallback -> nearest 3' end. This keeps UTRs parented even for de-novo genes and
+ncRNA, so the final GFF has no dangling UTR Parents.
+
+
+================================================================================
+STEP 5 — FINAL NORMALIZATION (AGAT)
+================================================================================
+
+The assembled annotation is normalized with AGAT to rebuild the
+gene -> mRNA -> CDS/exon/intron/UTR parentage and add introns and start/stop
+codons:
+
+  agat_convert_sp_gxf2gxf.pl \
+      -g hifiasm-041425-denovoEnhanced_peaks2utr_sorted.gff3 \
+      -o hifiasm-041425-denovoEnhanced_peaks2utr_sorted.agat.gff3
+
+This is the FINAL step and produces the final annotation file.
+
+
+================================================================================
+ORDER OF OPERATIONS (verified)
+================================================================================
+
+  merge_annotations.py (list mode)
+      -> peaks2utr  (3' UTR annotation, subset re-run)
+      -> assemble_final.py  (combine gene models + UTRs)
+      -> AGAT normalize (agat_convert_sp_gxf2gxf.pl)   [LAST]
+
+NOTE ON "agat first then peaks2utr":
+The verified order is peaks2utr BEFORE AGAT — AGAT normalization is the final
+step, applied AFTER the 3' UTR annotation and UTR reassembly. (AGAT was also
+used earlier, to pre-process the Liftoff and Braker input GFFs before the
+list-building overlap analysis, which may be the source of the "AGAT first"
+memory.) Both orders produce the same final structure because AGAT only
+rebuilds parentage and adds introns/start-stop codons; it does not change the
+UTR content.
+
+
+================================================================================
+KEY NUMBERS (at a glance)
+================================================================================
+
+  Input Liftoff genes            ~24,800 (reference-transferred)
+  Input de-novo genes            ~1,467  (Braker3, functionally named)
+  Renamed (LOC -> name)            2,185
+  Replaced (LOC)                      20
+  Replaced (concordant)              284
+  Added novel                      1,310
+  Placed via replace                 304
+  Kept (discordant, concordance fix)   5
+  -------------------------------------------------
+  FINAL GENES                      26,273
+================================================================================

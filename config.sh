@@ -141,6 +141,28 @@ export BLAST_DB_DIR="/tscc/nfs/home/jhc103/ps-renlab2-link/degu-genome-assembly-
 export INTERPROSCAN_BIN="$TOOLSHED_DIR/interproscan/interproscan-5.74-105.0/interproscan.sh"
 
 # =============================================================================
+# 06-annotation-enhancement-peaks2utr-agat — 3' UTR annotation + finalization
+# =============================================================================
+export ENV_PEAKS2UTR="toolshed-peaks2utr"
+export ENV_AGAT="toolshed-agat"
+export ENV_DEEPTOOLS="toolshed-deeptools"        # bamCoverage (expression BigWig)
+
+# scMultiome GEX data (4 samples merged: 181_PFC, 181_dHIP, 6997_dHIP, 7000_PFC)
+export PEAKS2UTR_BAM="$CODE_DIR/command-line-script/genome-annotation/peaks2utr/merged.bam"
+export PEAKS2UTR_BW="$CODE_DIR/command-line-script/genome-annotation/peaks2utr/merged.bw"
+export PEAKS2UTR_WORK_DIR="$CODE_DIR/command-line-script/genome-annotation/peaks2utr"
+
+# Annotation files for the UTR + AGAT finalization
+export MERGE_OUT_DIR="$CODE_DIR/command-line-script/annotation-merging/output"
+export MERGED_GFF="$MERGE_OUT_DIR/hifiasm-041425-denovoEnhanced_merged.gff3"           # 05 merge output
+export PEAKS2UTR_PREV_INPUT="$PEAKS2UTR_WORK_DIR/hifiasm_041425_denovoEnhanced_sorted.gff"   # previous annotation (full peaks2utr input)
+export PEAKS2UTR_PREV_OUTPUT="$PEAKS2UTR_WORK_DIR/hifiasm_041425_denovoEnhanced_peaks2utr_sorted_perfect.gff"  # previous full peaks2utr output (AGAT-processed)
+export CHANGED_SUBSET_GFF="$MERGE_OUT_DIR/peaks2utr_changed_subset.gff3"              # changed-gene subset (02)
+export PEAKS2UTR_SUBSET_OUT="$MERGE_OUT_DIR/peaks2utr_subset_out.gff3"                # subset peaks2utr output (03)
+export FINAL_UTR_GFF="$MERGE_OUT_DIR/hifiasm-041425-denovoEnhanced_peaks2utr_sorted.gff3"   # assembled w/ UTRs (04)
+export FINAL_AGAT_GFF="$MERGE_OUT_DIR/hifiasm-041425-denovoEnhanced_peaks2utr_sorted.agat.gff3"  # final AGAT-normalized (05)
+
+# =============================================================================
 # 05-genome-assembly-indepth-assessment-contam-filtering — purge_dup inputs
 # =============================================================================
 export ENV_ASSESSMENT="genome-assembly-assessment"
