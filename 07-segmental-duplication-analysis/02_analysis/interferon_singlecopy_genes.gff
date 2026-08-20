@@ -1,0 +1,3 @@
+chr15	Liftoff	gene	14303053	14342384	.	-	.	ID=gene-Syncrip;Dbxref=GeneID:101560287;Name=Syncrip;origin=liftoff;copy_num_ID=gene-Syncrip_0;coverage=1.0;extra_copy_number=0;gbkey=Gene;gene=Syncrip;gene_biotype=protein_coding;sequence_ID=0.999;valid_ORFs=6
+chr21	AUGUSTUS	gene	52601480	53023304	.	+	.	ID=gene-Gbp1;Name=Gbp1;origin=replace
+chr25	Liftoff	gene	26726155	26739140	.	-	.	ID=gene-Casp1;Dbxref=GeneID:101581472;Name=Casp1;origin=rename;copy_num_ID=gene-LOC101581472_0;coverage=1.0;extra_copy_number=0;gbkey=Gene;gene=LOC101581472;gene_biotype=protein_coding;sequence_ID=1.0;valid_ORFs=1

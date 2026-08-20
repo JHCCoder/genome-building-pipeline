@@ -1,0 +1,125 @@
+# Per-term gene/paralog breakdown (segdup background, 9 significant terms)
+# 'main' = gene feature with no -L/-DL/-RL suffix; 'paralog' = feature WITH a suffix.
+
+================================================================================
+Cellular Response to Type II Interferon (GO:0071346)  (8/17, padj=0.0130)
+================================================================================
+  SYNCRIP      -> SYNCRIP   [main]
+  CCL3         -> CCL3, CCL3-L1
+  LGALS9       -> LGALS9-L1, LGALS9-L2
+  GBP5         -> GBP5, GBP5-DL1, GBP5-DL2, GBP5-DL3, GBP5-L1
+  GBP6         -> GBP6, GBP6-L1, GBP6-L2, GBP6-L3
+  CASP1        -> CASP1   [main]
+  IFNG         -> IFNG, IFNG-DL1
+  GBP1         -> GBP1   [main]
+  --- 8 unique genes expand to 18 gene features; 7 have a main copy, 11 are paralog copies ---
+
+================================================================================
+Defense Response to Bacterium (GO:0042742)  (14/58, padj=0.0156)
+================================================================================
+  FPR2         -> FPR2-L1, FPR2-L2
+  GSDMC        -> GSDMC, GSDMC-L1
+  LYZ          -> LYZ-L1   [1 paralog(s)]
+  SFTPD        -> SFTPD, SFTPD-L1
+  GBP6         -> GBP6, GBP6-L1, GBP6-L2, GBP6-L3
+  S100A8       -> S100A8, S100A8-L1
+  XIAP         -> XIAP   [main]
+  CASP1        -> CASP1   [main]
+  MPEG1        -> MPEG1   [main]
+  LCN2         -> LCN2-L3, LCN2-L7, LCN2-L8
+  RNASE1       -> RNASE1-L2   [1 paralog(s)]
+  RNASE9       -> RNASE9   [main]
+  RNASE6       -> RNASE6-L2, RNASE6-L3, RNASE6-L4
+  GBP1         -> GBP1   [main]
+  --- 14 unique genes expand to 25 gene features; 9 have a main copy, 16 are paralog copies ---
+
+================================================================================
+Defense Response to Virus (GO:0051607)  (16/74, padj=0.0156)
+================================================================================
+  MX2          -> MX2, MX2-L1
+  IFNL3        -> IFNL3, IFNL3-L1, IFNL3-L2
+  TRIM5        -> TRIM5-L1, TRIM5-L3
+  BNIP3        -> BNIP3-DL1   [1 paralog(s)]
+  SAMHD1       -> SAMHD1   [main]
+  IFITM3       -> IFITM3, IFITM3-DL2, IFITM3-L1
+  SLFN13       -> SLFN13, SLFN13-L1, SLFN13-L2
+  IFIT1        -> IFIT1, IFIT1-L1, IFIT1-L2, IFIT1-L3
+  GBP5         -> GBP5, GBP5-DL1, GBP5-DL2, GBP5-DL3, GBP5-L1
+  EXOSC5       -> EXOSC5-DL1   [1 paralog(s)]
+  IFIT1B       -> IFIT1B   [main]
+  IFNL4        -> IFNL4   [main]
+  CASP1        -> CASP1   [main]
+  TRIM8        -> TRIM8-DL1   [1 paralog(s)]
+  RNASE1       -> RNASE1-L2   [1 paralog(s)]
+  RNASE6       -> RNASE6-L2, RNASE6-L3, RNASE6-L4
+  --- 16 unique genes expand to 33 gene features; 10 have a main copy, 23 are paralog copies ---
+
+================================================================================
+Response to Type II Interferon (GO:0034341)  (8/20, padj=0.0156)
+================================================================================
+  CCL3         -> CCL3, CCL3-L1
+  SYNCRIP      -> SYNCRIP   [main]
+  LGALS9       -> LGALS9-L1, LGALS9-L2
+  IFITM3       -> IFITM3, IFITM3-DL2, IFITM3-L1
+  GBP5         -> GBP5, GBP5-DL1, GBP5-DL2, GBP5-DL3, GBP5-L1
+  GBP6         -> GBP6, GBP6-L1, GBP6-L2, GBP6-L3
+  CASP1        -> CASP1   [main]
+  GBP1         -> GBP1   [main]
+  --- 8 unique genes expand to 19 gene features; 7 have a main copy, 12 are paralog copies ---
+
+================================================================================
+Primary Alcohol Metabolic Process (GO:0034308)  (8/21, padj=0.0170)
+================================================================================
+  RDH16        -> RDH16-L1   [1 paralog(s)]
+  HSD17B6      -> HSD17B6, HSD17B6-L1
+  NAAA         -> NAAA   [main]
+  AKR1B10      -> AKR1B10   [main]
+  ADH7         -> ADH7, ADH7-L1
+  CYP3A4       -> CYP3A4, CYP3A4-L1
+  SDR9C7       -> SDR9C7   [main]
+  CYP11B1      -> CYP11B1, CYP11B1-L1, CYP11B1-L2
+  --- 8 unique genes expand to 13 gene features; 7 have a main copy, 6 are paralog copies ---
+
+================================================================================
+Host-Mediated Suppression of Symbiont Invasion (GO:0046597)  (4/5, padj=0.0284)
+================================================================================
+  LY6E         -> LY6E, LY6E-L1
+  IFITM3       -> IFITM3, IFITM3-DL2, IFITM3-L1
+  TRIM5        -> TRIM5-L1, TRIM5-L3
+  SNX3         -> SNX3-DL1   [1 paralog(s)]
+  --- 4 unique genes expand to 8 gene features; 2 have a main copy, 6 are paralog copies ---
+
+================================================================================
+Negative Regulation of Natural Killer Cell Mediated Cytotoxicity (GO:0045953)  (4/5, padj=0.0284)
+================================================================================
+  CEACAM1      -> CEACAM1, CEACAM1-L1
+  GRB2         -> GRB2-L1   [1 paralog(s)]
+  SERPINB9     -> SERPINB9-L2   [1 paralog(s)]
+  LGALS9       -> LGALS9-L1, LGALS9-L2
+  --- 4 unique genes expand to 6 gene features; 1 have a main copy, 5 are paralog copies ---
+
+================================================================================
+Regulation of Interleukin-1 Beta Production (GO:0032651)  (8/24, padj=0.0284)
+================================================================================
+  CCL3         -> CCL3, CCL3-L1
+  LGALS9       -> LGALS9-L1, LGALS9-L2
+  USP50        -> USP50   [main]
+  GBP5         -> GBP5, GBP5-DL1, GBP5-DL2, GBP5-DL3, GBP5-L1
+  LILRA5       -> LILRA5   [main]
+  CD33         -> CD33, CD33-L1
+  CASP1        -> CASP1   [main]
+  IFNG         -> IFNG, IFNG-DL1
+  --- 8 unique genes expand to 16 gene features; 7 have a main copy, 9 are paralog copies ---
+
+================================================================================
+Retinoid Metabolic Process (GO:0001523)  (8/24, padj=0.0284)
+================================================================================
+  ALDH1A1      -> ALDH1A1, ALDH1A1-L1
+  RDH16        -> RDH16-L1   [1 paralog(s)]
+  HSD17B6      -> HSD17B6, HSD17B6-L1
+  AKR1B10      -> AKR1B10   [main]
+  ADH7         -> ADH7, ADH7-L1
+  CYP3A4       -> CYP3A4, CYP3A4-L1
+  SDR9C7       -> SDR9C7   [main]
+  UGT1A1       -> UGT1A1   [main]
+  --- 8 unique genes expand to 12 gene features; 7 have a main copy, 5 are paralog copies ---

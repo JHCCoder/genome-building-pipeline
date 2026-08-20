@@ -1,0 +1,141 @@
+# Methods context — bulk Hi-C & scMultiome metric comparison (Figure 3, Panels D–G)
+
+Scope: this file covers the bulk Hi-C cis-contact / cis-trans comparison (panels D/E)
+and the scMultiome feature-linkage / genes-per-cell comparison (panels F/G). Panels
+A–C (whole-genome alignment + repeat overlap) are described in README.md.
+
+## What this section shows
+
+The same biological samples were aligned to both assemblies — the OctDeg1.0
+reference and the new OctDeg2.0 (hifiasm-041425) assembly — and per-assembly QC
+metrics were compared. For every sample, OctDeg2.0 yields more cis Hi-C contacts
+and a higher cis/trans ratio, and more single-cell signal (feature linkages and
+median genes per cell), consistent with the new assembly capturing more mappable
+(largely repetitive) sequence than OctDeg1.0.
+
+Assemblies:
+  - octDeg1 = OctDeg1.0 reference
+  - octDeg2 = OctDeg2.0 (hifiasm-041425)
+
+## Bulk Hi-C (Panels D & E)
+
+Samples (n = 4): degu_060302, degu_060303, degu_120106, degu_040604.
+
+Hi-C reads from each sample were aligned independently to OctDeg1.0 and to
+OctDeg2.0, and per-sample/per-assembly summary metrics were computed:
+
+  - Cis_Contact    — number of cis (intra-chromosomal) contacts
+  - Cis_Trans      — cis/trans contact ratio (intra- vs inter-chromosomal contacts)
+  - Read_mapped    — number of reads mapped
+  - Pairs_mapped   — number of read pairs mapped
+
+Data:    data/cis_trans_bhic_metrics.txt
+Plotting: 03_bhic_cistrans_barplots.py
+
+[FILL IN from pipeline notes]:
+  - Hi-C aligner / processing pipeline and version (e.g., HiC-Pro, Juicer,
+    bwa mem + pairtools) used to produce the contact matrix.
+  - Any filtering applied before counting contacts (MAPQ threshold, PCR-duplicate
+    removal, valid-pair extraction, restriction-fragment assignment).
+
+## scMultiome (Panels F & G)
+
+Samples (n = 4): 181_PFC (prefrontal cortex), 181_dHIP (dorsal hippocampus),
+6997_dHIP, 7000_PFC.
+
+10x Genomics Multiome (joint ATAC + gene-expression) libraries were processed with
+Cell Ranger ARC. Each sample was aligned to both assemblies and the Cell Ranger
+ARC summary metrics were compared:
+
+  - "Feature linkages detected"  (Panel F) — number of regulatory element-to-gene
+    linkages (ATAC peaks linked to expressed genes).
+  - "Median genes per cell"      (Panel G) — median genes detected per cell.
+  - "Median high-quality fragments per cell" — in data/fragment_per_cell.txt
+    (computed but not plotted).
+
+Data:    data/feature_linkage.txt, data/gene_per_cell.txt
+Plotting: 04_scmultiome_metric_barplots.py
+
+[FILL IN from pipeline notes]:
+  - Cell Ranger ARC version.
+  - Reference construction: both assemblies were built into Cell Ranger ARC
+    references (details of the mkref step and any gene annotation used).
+
+## Sample metadata
+
+### Bulk Hi-C (Panels D/E)
+Four degu individuals, each with a bulk Hi-C (bHiC) library:
+  degu_060302, degu_060303, degu_120106, degu_040604.
+The "degu_" prefix + 6-digit code is the colony/sample ID. [FILL IN]: sex,
+tissue, and age for each individual — no metadata sheet is present in the repo.
+
+### scMultiome (Panels F/G)
+Sample IDs encode {animalID}_{brain region}:
+  181_PFC    = animal 181,  prefrontal cortex (PFC)
+  181_dHIP   = animal 181,  dorsal hippocampus (dHIP)
+  6997_dHIP  = animal 6997, dorsal hippocampus (dHIP)
+  7000_PFC   = animal 7000, prefrontal cortex (PFC)
+So animals 181, 6997, and 7000 contribute the four tissue samples. [FILL IN]:
+sex and age of animals 181 / 6997 / 7000.
+
+## Sequencing files + sizes
+
+### Bulk Hi-C — data/sequencing-reads-HiC/ (R1+R2 merged fastq.gz)
+  degu_040604   R1  degu_040604_bHiC_R1_merged.fastq.gz   961,339,494 bytes (0.90 GiB)
+                R2  degu_040604_bHiC_R2_merged.fastq.gz 1,047,393,561 bytes (0.98 GiB)
+  degu_060302   R1  degu_060302_bHiC_R1_merged.fastq.gz 1,054,251,720 bytes (0.98 GiB)
+                R2  degu_060302_bHiC_R2_merged.fastq.gz 1,121,911,622 bytes (1.04 GiB)
+  degu_060303   R1  degu_060303_bHiC_R1_merged.fastq.gz 1,005,621,075 bytes (0.94 GiB)
+                R2  degu_060303_bHiC_R2_merged.fastq.gz 1,106,855,915 bytes (1.03 GiB)
+  degu_120106   R1  degu_120106_bHiC_R1_001.fastq.gz      973,977,367 bytes (0.91 GiB)
+                R2  degu_120106_bHiC_R2_merged.fastq.gz 1,013,616,449 bytes (0.94 GiB)
+
+### scMultiome — raw 10x Multiome fastq + Cell Ranger ARC outputs
+Not located in this project directory. The feature-linkage / genes-per-cell
+metrics are pre-computed Cell Ranger ARC summaries copied into
+figure/sample_cCRE_cisTrans_TAD_metrics/; the Cell Ranger ARC run (raw fastq +
+outs/) lives outside the degu-genome-assembly-proj tree. [FILL IN]: path to the
+Cell Ranger ARC outputs / raw 10x Multiome fastq files and their sizes.
+
+## Metric definitions
+
+  Cis contact          contacts between loci on the same chromosome
+  Cis/trans ratio      ratio of intra-chromosomal to inter-chromosomal contacts
+  Feature linkage      Cell Ranger ARC linkage of an ATAC peak to a target gene
+  Median genes/cell    median number of genes detected per cell (Cell Ranger ARC)
+
+## Caption caveats to keep consistent with the figure
+
+  - The caption says "mean genes per cell" for Panel G; the Cell Ranger metric
+    (and gene_per_cell.txt) is the MEDIAN genes per cell.
+  - The caption's "from 4 Hi-C samples" for Panels F/G is a copy-editing slip —
+    feature linkages and genes per cell are scMultiome (10x Multiome) metrics,
+    not Hi-C metrics.
+
+## Verified values (reference)
+
+Bulk Hi-C cis/trans ratio (octDeg1 -> octDeg2):
+  degu_060302  1.237 -> 3.116
+  degu_060303  1.209 -> 3.157
+  degu_120106  1.366 -> 3.445
+  degu_040604  1.315 -> 3.400
+
+Bulk Hi-C cis contact (octDeg1 -> octDeg2):
+  degu_060302  2,852,961 -> 4,107,048
+  degu_060303  2,692,299 -> 3,919,499
+  degu_120106  2,610,805 -> 3,680,701
+  degu_040604  2,619,622 -> 3,737,949
+
+scMultiome feature linkages detected (octDeg1 -> octDeg2):
+  181_PFC      1,061,895 -> 1,177,006
+  181_dHIP     1,192,011 -> 1,345,717
+  6997_dHIP    1,301,708 -> 1,469,180
+  7000_PFC       401,794 ->   445,215
+
+scMultiome median genes per cell (octDeg1 -> octDeg2):
+  181_PFC        2,559 -> 2,673
+  181_dHIP       1,312 -> 1,379
+  6997_dHIP      1,360 -> 1,443
+  7000_PFC       2,891 -> 3,021
+
+Colors: octDeg1 = #33ffff (cyan), octDeg2 = #ffcc00 (yellow).

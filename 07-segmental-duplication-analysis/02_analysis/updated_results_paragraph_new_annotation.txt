@@ -1,0 +1,95 @@
+# Figure 7 segdup results paragraph — recalculated with the NEW annotation
+
+Recalculated 2026-08-19 against the new merged annotation
+(hifiasm-041425-denovoEnhanced_peaks2utr_sorted.agat.gff3) and the current
+segdup outputs (segdup_hotspots_80percLength.tsv /
+segdup_genes_hotspots_80percLength.tsv / hifiasm_gene_segDup_overlapInfo_081726.tsv
+/ GO_terms_segdup_hotspot_regions.tsv).
+
+=============================================================================
+UPDATED PARAGRAPH
+=============================================================================
+
+We define the segdup pervasive region as the minimum number of segdup regions
+that make up 80% of the total segdup lengths (Figure 7A). Using this criterion,
+we identified the 1,426 longest segdup regions containing 417.9 Mbp of sequence,
+which includes 1,271 gene features equating to 469 unique, non-LOC, genes
+(Figure 7A). GO enrichment analysis of the 469 genes revealed significant
+enrichment for pathways related to apoptosis (mitochondrial outer membrane
+permeabilization; 3/5 genes, padj = 0.038; GO:0097345), nuclear organization
+(regulation of protein localization to Cajal body; 4/9 genes, padj = 0.017;
+GO:1904869, GO:1904871), metabolic processes (retinol metabolic process:
+5/18 genes, padj = 0.023; GO:0042572; primary alcohol metabolic process:
+8/37 genes, padj = 0.006; GO:0034308), and immune responses, particularly
+interferon signaling and host defense (cellular response to type II interferon:
+8/38 genes, padj = 0.006; GO:0071346; response to type II interferon: 8/48
+genes, padj = 0.017; GO:0034341; defense response to virus: 16/161 genes,
+padj = 0.006; GO:0051607; defense response to bacterium: 14/165 genes,
+padj = 0.037; GO:0042742). We wondered whether the gene features enriched in
+the GO terms are transcriptionally active and decided to examine the genes
+enriched in the term Regulation of Protein Localization to Cajal Body pathway.
+Specifically, the gene features found in this pathway were: Cct3-l1, Cct4-dl2,
+Cct7-dl3, Larp7-dl2, Larp7-dl4, Larp7-dl5. These genes are transferred from the
+OctDeg1.0 annotation via Liftoff and renamed (Cct3-l1, renamed from LOC101561532)
+or potential "paralogs" added from the de novo braker annotation that could be
+functional paralogs or processed pseudogenes (Cct4-dl2, Cct7-dl3, Larp7-dl2,
+Larp7-dl4, Larp7-dl5). Looking beyond the segdup pervasive region, we found a
+total of 21 gene features related to these 4 genes, all of which lie within
+segdup regions. Specifically, we found Cct7, Cct4, Cct3, and Larp7 to have 8, 3,
+4, and 6 paralogous genes, respectively. We then visualized all the associated
+segdup links and positions of these genes (Cct3, Cct4, Cct7, Larp7) and their
+corresponding gene features (Figure 7D). We mapped degu transcriptomic data from
+29 tissues across five organs (NCBI BioProject PRJNA788430) to determine whether
+the 21 gene features are transcriptionally active. The results show detectable
+expression of at least one feature for each of the four genes examined
+(Figure 7F). These data indicate that segmentally duplicated genes in the degu
+genome are enriched for functionally active genes involved in Cajal body
+function.
+
+=============================================================================
+CHANGES (old -> new)
+=============================================================================
+
+1. Segdup pervasive region (annotation-independent; UNCHANGED):
+   1,426 regions, 417.9 Mbp. (Note: the current 80%-length file holds 1,425
+   regions at 79.99% cumulative; 1,426 is the first region that reaches >=80%.)
+
+2. Gene features overlapping the pervasive region: 1,271 (UNCHANGED).
+
+3. Unique non-LOC genes (suffix-stripped, LOC excluded):
+   466  ->  469.
+
+4. GO enrichment adjusted P-values (padj):
+   - Mitochondrial outer membrane permeabilization (GO:0097345): 3/5
+     0.041  ->  0.038 (exact 0.037675)
+   - Regulation of protein localization to Cajal body (GO:1904869): 4/9
+     0.020  ->  0.017 (exact 0.017134)
+   - Positive regulation of protein localization to Cajal body (GO:1904871): 4/9
+     0.020  ->  0.017 (exact 0.017134)
+   - Retinol metabolic process (GO:0042572): 5/18
+     0.025  ->  0.023 (exact 0.022864)
+   - Primary alcohol metabolic process (GO:0034308): 8/37
+     0.005  ->  0.006 (exact 0.005527)
+   - Cellular response to type II interferon (GO:0071346): 8/38
+     <=0.019  ->  0.006 (exact 0.005527)
+   - Response to type II interferon (GO:0034341): 8/38 -> 8/48 genes
+     <=0.019  ->  0.017 (exact 0.017134)
+   - Defense response to virus (GO:0051607): 16/161
+     0.005  ->  0.006 (exact 0.005527)
+   - Defense response to bacterium (GO:0042742): 14/165
+     0.039  ->  0.037 (exact 0.037343)
+
+5. Gene features in the Cajal body pathway (renamed in the new annotation):
+   OLD: Cct3, Cct4-dl1, Cct7-dl1, Larp7-dl6, Larp7-dl7, Larp7-dl2
+   NEW: Cct3-l1, Cct4-dl2, Cct7-dl3, Larp7-dl2, Larp7-dl4, Larp7-dl5
+
+   Provenance in the new annotation:
+   - Cct3-l1  : Liftoff, origin=rename (renamed from LOC101561532)
+   - Cct4-dl2 : AUGUSTUS (braker), origin=de_novo
+   - Cct7-dl3 : AUGUSTUS (braker), origin=de_novo
+   - Larp7-dl2: AUGUSTUS (braker), origin=de_novo
+   - Larp7-dl4: AUGUSTUS (braker), origin=de_novo
+   - Larp7-dl5: AUGUSTUS (braker), origin=de_novo
+
+6. Four-gene paralog counts (UNCHANGED): Cct7 = 8, Cct4 = 3, Cct3 = 4,
+   Larp7 = 6; total = 21 gene features.
