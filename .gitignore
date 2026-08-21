@@ -10,3 +10,13 @@ code_log.txt
 # Python cache
 __pycache__/
 *.pyc
+
+# Methods/Results paper-writing text (not publication code)
+*METHODS*.txt
+*methods*.txt
+*RESULTS*.txt
+*results*.txt
+*paralogs*.txt
+
+# Collaborator-facing provenance table (not part of this project's publication code)
+04-genome-annotation-initial-evaluation/09-perfect-gff-octdeg1-provenance/
