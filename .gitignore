@@ -20,3 +20,26 @@ __pycache__/
 
 # Collaborator-facing provenance table (not part of this project's publication code)
 04-genome-annotation-initial-evaluation/09-perfect-gff-octdeg1-provenance/
+
+# Salmon quantification (superseded by featureCounts; kept locally, not committed)
+05-genome-assembly-indepth-assessment-contam-filtering/04-paralog-assessment-by-expression/salmon-mapping/
+
+# Notebook-runner helper (kept locally; users run notebooks themselves)
+run_notebook.py
+
+# Timestamped regeneration backups (kept locally, not committed)
+*.pre-*
+*.fixed_*
+_test_*
+
+# Generated figure outputs (regenerable; kept locally, not committed)
+*.png
+*.svg
+*.pdf
+*.jpg
+*.jpeg
+
+# Analysis-note / provenance text (paper-writing; kept locally, not committed)
+*provenance*.txt
+04-genome-annotation-initial-evaluation/07-paralog-loci-read-depth/04c_segdup_elevated_coverage_claim_check.txt
+04-genome-annotation-initial-evaluation/07-paralog-loci-read-depth/04d_segdup_elevated_coverage_summary.txt

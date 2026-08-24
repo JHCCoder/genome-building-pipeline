@@ -25,10 +25,12 @@ chr5	AUGUSTUS	gene	20392128	20496613	.	-	.	ID=gene-Xpo7;Name=Xpo7;origin=replace
 chr5	AUGUSTUS	gene	28311687	28769487	.	-	.	ID=gene-Spock3;Name=Spock3;origin=replace
 chr5	AUGUSTUS	gene	43256885	43747200	.	+	.	ID=gene-Tenm3;Name=Tenm3;origin=replace
 chr5	AUGUSTUS	gene	131863734	131888696	.	-	.	ID=gene-Spart;Name=Spart;origin=replace
+chr6	AUGUSTUS	gene	4096107	4120100	.	-	.	ID=gene-Antxrl-rl1;Name=Antxrl-rl1;origin=replace
 chr6	gmst	gene	12524417	13076438	.	-	.	ID=gene-Bbs9;Name=Bbs9;origin=replace
 chr6	gmst	gene	133246650	133276837	.	+	.	ID=gene-Znf248;Name=Znf248;origin=replace
 chr7	AUGUSTUS	gene	24525123	24910092	.	+	.	ID=gene-Myo1d;Name=Myo1d;origin=replace
 chr7	AUGUSTUS	gene	24920751	24969163	.	-	.	ID=gene-Psmd11;Name=Psmd11;origin=replace
+chr7	Liftoff	gene	38414561	38418225	.	+	.	ID=gene-Ppp1r2;Dbxref=GeneID:101567110;Name=Ppp1r2;origin=rename;copy_num_ID=gene-LOC101567110_0;coverage=1.0;extra_copy_number=0;gbkey=Gene;gene=LOC101567110;gene_biotype=protein_coding;sequence_ID=0.999;valid_ORFs=2
 chr7	Liftoff	gene	41505869	41531022	.	-	.	ID=gene-Myh4;Dbxref=GeneID:101582028;Name=Myh4;origin=liftoff;copy_num_ID=gene-Myh4_0;coverage=1.0;extra_copy_number=0;gbkey=Gene;gene=Myh4;gene_biotype=protein_coding;sequence_ID=0.998;valid_ORFs=1
 chr7	AUGUSTUS	gene	42796791	43221509	.	+	.	ID=gene-Dnah9;Name=Dnah9;origin=replace
 chr7	AUGUSTUS	gene	116836395	117121527	.	-	.	ID=gene-Uggt2;Name=Uggt2;origin=replace
@@ -52,9 +54,9 @@ chr16	AUGUSTUS	gene	16997248	17343427	.	+	.	ID=gene-Slc2a13;Name=Slc2a13;origin=
 chr16	AUGUSTUS	gene	27737095	27751565	.	-	.	ID=gene-Cct2;Name=Cct2;origin=replace
 chr16	AUGUSTUS	gene	42383379	42402598	.	+	.	ID=gene-Gls2;Name=Gls2;origin=replace
 chr16	gmst	gene	87119412	88167972	.	+	.	ID=gene-Naaladl2;Name=Naaladl2;origin=replace
-chr16	AUGUSTUS	gene	97790990	97810852	.	+	.	ID=gene-Ppp1r2;Name=Ppp1r2;origin=replace
 chr16	AUGUSTUS	gene	99580120	99708309	.	+	.	ID=gene-Atp13a5;Name=Atp13a5;origin=replace
 chr17	AUGUSTUS	gene	15232642	15277135	.	+	.	ID=gene-Bbs4;Name=Bbs4;origin=replace
+chr17	gmst	gene	23502493	23509198	.	-	.	ID=gene-Znf709-rl1;Name=Znf709-rl1;origin=replace
 chr17	AUGUSTUS	gene	59247477	59479041	.	-	.	ID=gene-Copg2;Name=Copg2;origin=replace
 chr17	gmst	gene	63862280	64406796	.	+	.	ID=gene-Pde1c;Name=Pde1c;origin=replace
 chr18	AUGUSTUS	gene	41142721	41273159	.	-	.	ID=gene-Adgb;Name=Adgb;origin=replace
