@@ -53,11 +53,11 @@ PROJ_ROOT = "/tscc/projects/ps-renlab2/jhc103/degu-genome-assembly-proj"
 HERE = Path(__file__).resolve().parent
 
 # Gene x segdup overlap table, produced from the NEW merged annotation
-# (hifiasm-041425-denovoEnhanced_peaks2utr_sorted.agat.gff3) by
+# (hifiasm-041425-denovoEnhanced_parentReassigned_20260820.gff3) by
 # 07-segmental-duplication-analysis/04_segdup_gene_overlap.ipynb.
 # Re-run that notebook after a new annotation before running this script.
 GENE_FILE = (
-    f"{PROJ_ROOT}/code/github-code-to-share/07-segmental-duplication-analysis/"
+    f"{PROJ_ROOT}/code/github-code-to-share/07-segmental-duplication-analysis/02_analysis/"
     "hifiasm_gene_segDup_overlapInfo_081726.tsv"
 )
 

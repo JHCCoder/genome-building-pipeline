@@ -4,7 +4,7 @@ from intervaltree import IntervalTree
 from collections import Counter, defaultdict
 
 DUP = "/tscc/projects/ps-renlab2/jhc103/degu-genome-assembly-proj/output/outputs-from-purge-duplicate/hifiasm-041425-scaffolded-assembly/dups.bed"
-GFF = "/tscc/projects/ps-renlab2/jhc103/degu-genome-assembly-proj/code/command-line-script/annotation-merging/output/hifiasm-041425-denovoEnhanced_peaks2utr_sorted.agat.gff3"
+GFF = "/tscc/projects/ps-renlab2/jhc103/degu-genome-assembly-proj/code/command-line-script/annotation-merging/output/hifiasm-041425-denovoEnhanced_parentReassigned_20260820.gff3"
 
 CATS = ['HAPLOTIG','HIGHCOV','JUNK','OVLP','REPEAT']
 

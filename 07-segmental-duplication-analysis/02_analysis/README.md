@@ -26,7 +26,7 @@ circos, and paralog expression).
   `.../segdup_output_duplicateLinkRemoved.bedpe` (steps 4–5); see `BISER_BEDPE`
   in `config.sh`.
 - **Gene annotation** (the new merged annotation, AGAT-normalized):
-  `code/command-line-script/annotation-merging/output/hifiasm-041425-denovoEnhanced_peaks2utr_sorted.agat.gff3`
+  `code/command-line-script/annotation-merging/output/hifiasm-041425-denovoEnhanced_parentReassigned_20260820.gff3`
   — used by steps 4 and 7. Gene IDs are `ID=gene-…`.
 - **Repeat annotation** (RepeatMasker `.out.gff`) for the feature-overlap in step 5.
 

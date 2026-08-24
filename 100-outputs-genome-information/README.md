@@ -31,7 +31,7 @@ is deposited here.
 
 | Directory | Analysis | Key files |
 |---|---|---|
-| `annotation/` | final merged gene annotation (Liftoff + Braker3/AUGUSTUS) | `hifiasm-041425-denovoEnhanced_peaks2utr_sorted.agat.gff3.gz` |
+| `annotation/` | final merged gene annotation (Liftoff + Braker3/AUGUSTUS) | `hifiasm-041425-denovoEnhanced_parentReassigned_20260820.gff3.gz` |
 | `segdup-biser/` | segmental duplications | BISER `segdup_output_duplicateLinkRemoved.bedpe.gz` (primary call set), `segdup_output_mod.bedpe.gz`, `…_elem.txt.gz` |
 | `centroAnno/` | centromere annotation (per chromosome + genome-wide) | centroAnno `chr*_HORs.fa`, `chr*_monomerTemplates.fa`, `chr*_{hor,}decomposedResult.csv.gz`, plus `cautils-*/` genome-wide `HORs.bed`, `repeat_regions.bed`, `top10_repeats.bed` |
 | `hicat/` | higher-order-repeat arrays (chr4 & chr25) | HiCAT `hicat_chr{4,25}_{density,hor_arrays,types}.bed` |

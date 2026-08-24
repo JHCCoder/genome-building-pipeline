@@ -24,7 +24,7 @@ chromosome ticks/labels on the outer ring. Outputs are written to
 | Data | `PROJ_ROOT`-relative path |
 |---|---|
 | Chromosome sizes (`.fai`) | `data/denovo_OctDegus_genome/041425-assembly/hifiasm-041425-assembly-mitoFiltered-scaffolded-curated-masked-chrNameAssigned/assembly_final.sorted.headerRenamed.chrAssigned.hardMasked.mito.fasta.fai` |
-| Gene annotation (agat GFF) | `code/command-line-script/annotation-merging/output/hifiasm-041425-denovoEnhanced_peaks2utr_sorted.agat.gff3` |
+| Gene annotation (agat GFF) | `code/command-line-script/annotation-merging/output/hifiasm-041425-denovoEnhanced_parentReassigned_20260820.gff3` |
 | GC content (1 kb windows) | `figure/circos-plot/feature-overview/assembly_final.sorted.headerRenamed.chrAssigned.mito.gc_content.bed` |
 | A/B compartment scores | `figure/hic-plot/eigenvector_track_dropNA.bed` |
 | Contig→scaffold junctions | `figure/circos-plot/feature-overview/agp_final_contig2scaffold.bed` |
@@ -37,9 +37,12 @@ chromosome ticks/labels on the outer ring. Outputs are written to
 ## Notes
 
 - The notebook uses the **correct merged annotation**
-  (`…_peaks2utr_sorted.agat.gff3`), substituted in place of the earlier
-  `…_peaks2utr_sorted.gff3`. Its `CDS`/`snRNA`/`lnc_RNA`/`tRNA` feature types are
-  unchanged, so the gene tracks are unaffected.
+  (`…_parentReassigned_20260820.gff3`), substituted in place of the earlier
+  `…_peaks2utr_sorted.gff3` and then `…_peaks2utr_sorted.agat.gff3`. Its
+  `CDS`/`snRNA`/`lnc_RNA`/`tRNA` feature types are unchanged, so the gene tracks
+  are unaffected. The parent-reassigned file differs from the AGAT one only in
+  which family member holds the unsuffixed gene name — coordinates, feature
+  structure and UTRs are identical.
 - Paths are expressed as `f"{PROJ_ROOT}/…"`; set `PROJ_ROOT` in the first code cell.
 - `build_noMethylation_nb.py` reads the full source notebook
   `pyCircularize_features.ipynb` (kept in `figure/circos-plot/feature-overview/`,

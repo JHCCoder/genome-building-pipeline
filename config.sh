@@ -74,6 +74,22 @@ export MOUSE_GENOME_FA="$DATA_DIR/GRCm39_genome/GCF_000001635.27_GRCm39_genomic.
 export DEGU_LIFTOFF_GFF="$OUTPUT_DIR/outputs-from-liftoff/hifiasm-041425-scaffolded/hifiasm-041425-scaffolded.gff"
 export DEGU_SCAFFOLDS_FA="$DATA_DIR/denovo_OctDegus_genome/041425-assembly/hifiasm-041425-assembly-mitoFiltered-scaffolded/scaffolds.fa"
 
+# -----------------------------------------------------------------------------
+# Comparative genomes (tandem-repeat comparison across species).
+# These resolve through the symlink stand-ins in 100-inputs-files/ rather than
+# the raw data paths, so the input directory is the single place to swap in your
+# own copies. The targets are 2-3 GB public NCBI assemblies and are NOT stored in
+# git — see 100-inputs-files/README.md.
+# -----------------------------------------------------------------------------
+export INPUTS_DIR="$CODE_DIR/github-code-to-share/100-inputs-files"
+export HUMAN_GENOME_FA="$INPUTS_DIR/references/human_GRCh38_genome.fna"
+export NMR_GENOME_FA="$INPUTS_DIR/references/nakedMoleRat_genome.fna"
+export DOG_GENOME_FA="$INPUTS_DIR/references/dog_Dog10K_genome.fna"
+export GUINEAPIG_GENOME_FA="$INPUTS_DIR/references/guineaPig_mCavPor4_genome.fna"
+export RAT_GENOME_FA="$INPUTS_DIR/references/rat_GRCr8_genome.fna"
+export VERKKO_HAP1_SCAFFOLDS_FA="$INPUTS_DIR/assemblies/verkko_hap1_scaffolds.fa"
+export HAPHIC_ASSEMBLY_FA="$INPUTS_DIR/assemblies/haphic_assembly_final.fasta"
+
 # =============================================================================
 # 02-initial-genome-assembly-evaluation — Merqury + BUSCO inputs
 # =============================================================================
@@ -160,7 +176,20 @@ export PEAKS2UTR_PREV_OUTPUT="$PEAKS2UTR_WORK_DIR/hifiasm_041425_denovoEnhanced_
 export CHANGED_SUBSET_GFF="$MERGE_OUT_DIR/peaks2utr_changed_subset.gff3"              # changed-gene subset (02)
 export PEAKS2UTR_SUBSET_OUT="$MERGE_OUT_DIR/peaks2utr_subset_out.gff3"                # subset peaks2utr output (03)
 export FINAL_UTR_GFF="$MERGE_OUT_DIR/hifiasm-041425-denovoEnhanced_peaks2utr_sorted.gff3"   # assembled w/ UTRs (04)
-export FINAL_AGAT_GFF="$MERGE_OUT_DIR/hifiasm-041425-denovoEnhanced_peaks2utr_sorted.agat.gff3"  # final AGAT-normalized (05)
+export FINAL_AGAT_GFF="$MERGE_OUT_DIR/hifiasm-041425-denovoEnhanced_peaks2utr_sorted.agat.gff3"  # AGAT-normalized (05)
+
+# 06 — family-parent reassignment (reassign_family_parents.py), Option B rule.
+# Derived from FINAL_AGAT_GFF: only Name=/ID= on gene rows and Parent= on their
+# children differ, so it carries the same peaks2utr UTRs and AGAT normalisation
+# (feature counts are identical; 0 dangling Parent references). Which member of
+# each gene family holds the unsuffixed "parent" name is chosen by
+# structural completeness (most exons) -> coding integrity -> median TPM ->
+# transfer fidelity -> genomic order, instead of the old provenance-and-row-order
+# cascade. 194 families / 523 genes renamed; 145/1,091 parents carry valid_ORFs=0
+# (incomplete Liftoff transfer, not a pseudogene).
+# ---> THIS IS THE ANNOTATION ALL DOWNSTREAM ANALYSIS SHOULD USE.
+export FINAL_ANNOTATION_GFF="$MERGE_OUT_DIR/hifiasm-041425-denovoEnhanced_parentReassigned_OptionB_20260820.gff3"
+export FAMILY_PARENT_RENAME_MAP="$MERGE_OUT_DIR/family_parent_rename_map_OptionB_20260820.tsv"
 
 # =============================================================================
 # 05-genome-assembly-indepth-assessment-contam-filtering — purge_dup inputs
@@ -186,7 +215,12 @@ export ASSEMBLY_MITO_FA="$PROJ_ROOT/degu-genome-browser-pythonVersion/assembly_f
 export ENV_TRANSCRIPTOME_MAPPING="transcriptome-mapping"
 export READ_DEPTH_ASSEMBLY="$DATA_DIR/denovo_OctDegus_genome/041425-assembly/hifiasm-041425-assembly-mitoFiltered-scaffolded-curated-masked-chrNameAssigned-contamFiltered/assembly_final.sorted.headerRenamed.chrAssigned.contamFiltered.fasta"
 export READ_DEPTH_HIFI_DIR="$SCRATCH_DIR/hifi/male/long-reads"
-export PARALOG_GFF="$DATA_DIR/denovo_OctDegus_genome/041425-assembly/hifiasm_041425_denovoEnhanced_peaks2utr_sorted_perfect.gff"
+# Annotation the paralog families are derived from. Points at the final
+# annotation (single source of truth) — it previously named
+# hifiasm_041425_denovoEnhanced_peaks2utr_sorted_perfect.gff, a DIFFERENT and
+# older annotation (26,267 genes / 1,150 multi-member families vs 26,273 /
+# 1,091), which no longer matches what build_paralog_families.py produces.
+export PARALOG_GFF="$FINAL_ANNOTATION_GFF"
 export PARALOG_REPEAT_BED="$PROJ_ROOT/figure/circos-plot/feature-overview/assembly_final.sorted.headerRenamed.fasta.out.gff"
 export PARALOG_GENOME_LENGTHS="$CODE_DIR/command-line-script/contig-coverage/hifiasm_041425_scaffolded_juiceBox_sorted_hardMasked_chrAssigned_mitoAdded_genome_length.txt"
 export STAR_INDEX="$PROJ_ROOT/figure/paralog-alignment-visualization/star_index"
@@ -214,11 +248,21 @@ export BISER_MAX_ERROR=15
 export BISER_GENOME_DIR="$DATA_DIR/genome-related-species"      # multi-species assemblies
 export BISER_GENOME_LIST="$BISER_GENOME_DIR/genome_list7.txt"   # <assembly.fna>\t<species>
 
+# Gene x segdup overlap table: every gene in FINAL_ANNOTATION_GFF with an
+# overlaps_dup flag. Written by 02_analysis/04_segdup_gene_overlap.ipynb and read
+# by 05_cumulative_feature_overlap.ipynb and 06_go_enrichment.ipynb. Named here so
+# a rename cannot silently orphan the two downstream notebooks (it did: 04 was
+# repointed to the Option B annotation and changed this filename, leaving 05/06
+# reading a stale expression-first table).
+export SEGDUP_GENE_OVERLAP_TSV="$CODE_DIR/github-code-to-share/07-segmental-duplication-analysis/02_analysis/hifiasm_gene_segDup_overlapInfo_082026_optionB.tsv"
+
 # =============================================================================
 # 06-tandem-repeat-analysis — processing tools
 # =============================================================================
 export TRF_BIN="$TOOLSHED_DIR/TRF-4.09.1/build/src/trf"
 export CENTROANNO_DIR="$TOOLSHED_DIR/centroAnno"
+# Rscript from the r-visualizations env; the CENPA figure notebook shells out to it
+export RSCRIPT_VIZ_BIN="/tscc/projects/ps-renlab2/jhc103/miniconda3-storage/envs/r-visualizations/bin/Rscript"
 export HICAT_BIN="/tscc/projects/ps-renlab2/jhc103/miniconda3-storage/envs/toolshed-HiCAT/bin/hicat"
 
 # =============================================================================

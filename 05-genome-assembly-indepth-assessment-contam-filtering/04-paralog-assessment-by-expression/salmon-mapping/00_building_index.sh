@@ -30,7 +30,8 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 cd "$SCRIPT_DIR"
 
 # Build the transcriptome + decoys from the annotation GFF + assembly, then index
-gffread "$LIFTOFF_REF_GFF" -g "$MITO_ASSEMBLY" -w all_transcripts.fa
+# Use the FINAL (Option B parent-reassigned) annotation, not the stale LIFTOFF_REF_GFF.
+gffread "$FINAL_ANNOTATION_GFF" -g "$MITO_ASSEMBLY" -w all_transcripts.fa
 grep "^>" "$MITO_ASSEMBLY" | cut -d " " -f 1 > decoys.txt
 sed -i.bak -e 's/>//g' decoys.txt
 cat all_transcripts.fa "$MITO_ASSEMBLY" > transcriptome_genome.fa
