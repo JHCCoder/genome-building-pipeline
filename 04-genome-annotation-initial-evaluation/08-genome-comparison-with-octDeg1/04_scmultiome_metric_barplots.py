@@ -1,35 +1,29 @@
 #!/usr/bin/env python3
 """
-Panels F and G of Figure 3 — scMultiome (10x Multiome) alignment metrics for
-the same four samples mapped to OctDeg1.0 vs OctDeg2.0.
+Panel D of Figure 3 — single-cell Multiome metrics for the same four samples
+mapped to OctDeg1.0 vs OctDeg2.0 (replaces the former separate panels F and G):
+  top:    feature linkages detected
+  bottom: median genes per cell
+Grouped bars (grey = OctDeg1.0, blue = OctDeg2.0) with one shared sample axis
+and one assembly key. Drawn at printed size for Genome Research (8 pt text),
+in the same format as panel C.
 
-  Panel F: feature linkages (Cell Ranger ARC "Feature linkages detected")
-  Panel G: median genes per cell
+The samples of interest are the scMultiome samples in TARGET_SAMPLES; the full
+feature_linkage table holds many more samples and is filtered to these.
 
-Both are grouped barplots (one bar per assembly per sample). The four
-samples-of-interest are the scMultiome samples (181_PFC, 181_dHIP, 6997_dHIP,
-7000_PFC); the full feature_linkage table holds many more samples and is
-filtered down to these four here.
-
-Inputs (bundled in data/ for portability; canonical copies live at
-figure/sample_cCRE_cisTrans_TAD_metrics/):
-
+Inputs (bundled in data/):
   feature_linkage.txt   samples / genome / "Feature linkages detected"
   gene_per_cell.txt     samples / genome / "Median genes per cell"
 
-Outputs (written next to this script):
-  figure3F_feature_linkage.png
-  figure3G_genes_per_cell.png
-
-Port of figure/sample_cCRE_cisTrans_TAD_metrics/
-scatterplot_feature_linkage_scMultiome.ipynb (barplot cells).
-
-Run with an env that has pandas/matplotlib:
-
-    conda activate genome-assembly
-    python 04_scmultiome_metric_barplots.py
+Run with the python-visualizations env:
+    python 04_scmultiome_metric_barplots.py [--width-mm 84] [--height-mm 60]
 """
 
+import argparse
+import os
+import subprocess
+import sys
+import time
 from pathlib import Path
 
 import numpy as np
@@ -37,74 +31,101 @@ import pandas as pd
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-import matplotlib.ticker as ticker
+from matplotlib.patches import Patch
 
-# ---------------------------------------------------------------------------
-# RUN PARAMETERS
-# ---------------------------------------------------------------------------
+
+def _cfg(name):
+    val = os.environ.get(name)
+    if val:
+        return val
+    root = os.path.abspath(os.path.dirname(__file__))
+    while not os.path.isfile(os.path.join(root, "config.sh")) and root != os.path.dirname(root):
+        root = os.path.dirname(root)
+    # Source config.sh in a subshell so nested $VAR references are expanded.
+    val = subprocess.check_output(
+        ["bash", "-c", f'source "$1" 2>/dev/null; printf "%s" "${{{name}}}"', "_",
+         os.path.join(root, "config.sh")],
+        text=True,
+    )
+    if not val:
+        sys.exit(f"ERROR: {name} is not set in the environment or in config.sh")
+    return val
+
+
+FONT_SIZE = 8            # pt at final print size; Genome Research: 8-10 pt
 TARGET_SAMPLES = ["181_PFC", "181_dHIP", "6997_dHIP", "7000_PFC"]
-ASSEMBLY_COLORS = {"octDeg1": "#33ffff", "octDeg2": "#ffcc00"}
-DPI = 300
+ASSEMBLIES = [("octDeg1", "OctDeg1.0", _cfg("FIG3_COLOR_OCTDEG1")),
+              ("octDeg2", "OctDeg2.0", _cfg("FIG3_COLOR_OCTDEG2"))]
+SAMPLE_LABEL = lambda s: s.replace("_", " ")        # display name: no underscores
 
-# ---------------------------------------------------------------------------
-# PATHS
-# ---------------------------------------------------------------------------
-HERE = Path(__file__).resolve().parent
-DATA = HERE / "data"
+ap = argparse.ArgumentParser()
+ap.add_argument("--width-mm", type=float, default=84)
+ap.add_argument("--height-mm", type=float, default=60)
+opts = ap.parse_args()
+PANEL_W, PANEL_H = opts.width_mm / 25.4, opts.height_mm / 25.4
 
-OUT_F = str(HERE / "figure3F_feature_linkage.png")
-OUT_G = str(HERE / "figure3G_genes_per_cell.png")
-
-
-def grouped_barplot(df, value_col, ylabel, out_path, fmt=None):
-    """Grouped barplot of `value_col` per sample (one bar per assembly)."""
-    df = df.sort_values(["samples", "genome"]).reset_index(drop=True)
-    samples = df["samples"].unique()
-    genomes = df["genome"].unique()
-
-    fig, ax = plt.subplots(figsize=(10, 4.5))
-    x = np.arange(len(samples))
-    width = 0.35
-    for i, g in enumerate(genomes):
-        vals = df[df["genome"] == g][value_col]
-        ax.bar(x + i * width, vals, width, label=g,
-               color=ASSEMBLY_COLORS[g], alpha=0.7)
-    ax.set_xlabel("Samples", fontsize=16)
-    ax.set_ylabel(ylabel, fontsize=16)
-    ax.set_xticks(x + width / 2)
-    ax.set_xticklabels(samples, fontsize=14)
-    ax.tick_params(axis="y", labelsize=14)
-    if fmt == "millions":
-        ax.yaxis.set_major_formatter(ticker.FuncFormatter(
-            lambda v, p: f"{v * 1e-6:.0f}M"))
-    elif fmt == "thousands":
-        ax.yaxis.set_major_formatter(ticker.FuncFormatter(
-            lambda v, p: f"{v * 1e-3:.0f}K"))
-    ax.spines["top"].set_visible(False)
-    ax.spines["right"].set_visible(False)
-    handles = [plt.Rectangle((0, 0), 1, 1, facecolor=ASSEMBLY_COLORS[g],
-                             alpha=0.7, label=g) for g in genomes]
-    ax.legend(handles=handles, title="Assembly", fontsize=13, title_fontsize=14,
-              loc="upper right")
-    fig.tight_layout()
-    fig.savefig(out_path, dpi=DPI, bbox_inches="tight")
-    plt.close(fig)
-    print("saved:", out_path)
+DATA = Path(__file__).resolve().parent / "data"
+out_dir = _cfg("FIG3_OUT_DIR")
+os.makedirs(out_dir, exist_ok=True)
+out_stem = os.path.join(out_dir, "figure3D_multiome_metrics")
 
 
-# ============================================================
-# Panel F — feature linkages (filter to the 4 samples of interest)
-# ============================================================
-fl = pd.read_csv(DATA / "feature_linkage.txt", sep="\t", header=0)
-fl = fl[fl["samples"].isin(TARGET_SAMPLES)]
-print("feature-linkage samples:", list(fl["samples"].unique()))
-grouped_barplot(fl, "Feature linkages detected", "Feature linkages",
-                OUT_F, fmt="millions")
+def load(fname, value_col):
+    d = pd.read_csv(DATA / fname, sep="\t").drop_duplicates()
+    d = d[d["samples"].isin(TARGET_SAMPLES)]
+    t = d.pivot(index="samples", columns="genome", values=value_col).loc[TARGET_SAMPLES]
+    assert t.notna().all().all(), f"{fname}: missing values for {TARGET_SAMPLES}"
+    return t
 
-# ============================================================
-# Panel G — median genes per cell
-# ============================================================
-gpc = pd.read_csv(DATA / "gene_per_cell.txt", sep="\t", header=0)
-print("genes-per-cell samples:", list(gpc["samples"].unique()))
-grouped_barplot(gpc, "Median genes per cell", "Median genes per cell",
-                OUT_G, fmt="thousands")
+
+METRICS = [  # (table, y-axis label, scale divisor, y ticks)
+    (load("feature_linkage.txt", "Feature linkages detected"), "Feature linkages\n(millions)", 1e6,
+     [0, 0.5, 1, 1.5]),
+    (load("gene_per_cell.txt", "Median genes per cell"), "Median genes\nper cell (thousands)", 1e3,
+     [0, 1, 2, 3]),
+]
+for t, *_ in METRICS:
+    print(t)
+
+plt.rcParams.update({
+    "font.family": "sans-serif", "font.sans-serif": ["Helvetica", "Arial", "Nimbus Sans"],
+    "font.size": FONT_SIZE, "axes.labelsize": FONT_SIZE,
+    "xtick.labelsize": FONT_SIZE, "ytick.labelsize": FONT_SIZE, "legend.fontsize": FONT_SIZE,
+    "axes.linewidth": 0.5, "xtick.major.width": 0.5, "ytick.major.width": 0.5,
+    "xtick.major.size": 2.5, "ytick.major.size": 2.5,
+    "svg.fonttype": "none", "pdf.fonttype": 42,
+})
+LEFT_IN, RIGHT_IN, TOP_IN, BOTTOM_IN, GAP_IN = 0.55, 0.05, 0.22, 0.20, 0.10
+fig = plt.figure(figsize=(PANEL_W, PANEL_H))
+h = (PANEL_H - TOP_IN - BOTTOM_IN - GAP_IN) / len(METRICS)
+x = np.arange(len(TARGET_SAMPLES))
+width = 0.36
+for k, (tbl, ylabel, div, yt) in enumerate(METRICS):
+    y0 = PANEL_H - TOP_IN - (k + 1) * h - k * GAP_IN
+    ax = fig.add_axes((LEFT_IN / PANEL_W, y0 / PANEL_H, 1 - (LEFT_IN + RIGHT_IN) / PANEL_W, h / PANEL_H))
+    for i, (key, _, color) in enumerate(ASSEMBLIES):
+        ax.bar(x + (i - 0.5) * width, tbl[key] / div, width, color=color, lw=0, zorder=3)
+    top = max(yt[-1], ax.dataLim.y1) * 1.06          # never clip a bar
+    ax.set_ylim(0, top)
+    ax.set_yticks(yt, [f"{v:g}" for v in yt])
+    ax.set_ylabel(ylabel, labelpad=3, linespacing=1.0)
+    ax.yaxis.set_label_coords(-0.30 / (PANEL_W - LEFT_IN - RIGHT_IN), 0.5)
+    ax.set_xticks(x)
+    ax.set_xticklabels([SAMPLE_LABEL(s) for s in TARGET_SAMPLES] if k == len(METRICS) - 1 else [])
+    ax.tick_params(axis="x", length=0, pad=3)
+    ax.set_xlim(-0.6, len(TARGET_SAMPLES) - 0.4)
+    ax.yaxis.grid(True, color="#E5E5E5", lw=0.5, zorder=0)
+    ax.set_axisbelow(True)
+    for side in ("top", "right"):
+        ax.spines[side].set_visible(False)
+
+fig.legend(handles=[Patch(color=c, label=l) for _, l, c in ASSEMBLIES], ncol=2,
+           loc="upper right", bbox_to_anchor=(1 - RIGHT_IN / PANEL_W, 1), frameon=False,
+           handlelength=1.2, handleheight=0.9, columnspacing=1.2, borderaxespad=0.1)
+
+for ext in ("pdf", "svg", "png"):
+    path = f"{out_stem}.{ext}"
+    if os.path.exists(path):
+        os.replace(path, f"{path}.pre-{time.strftime('%Y%m%d-%H%M%S')}")
+    fig.savefig(path, dpi=600)
+print(f"{out_stem}.{{pdf,svg,png}}  ({opts.width_mm:.0f} x {opts.height_mm:.0f} mm)")

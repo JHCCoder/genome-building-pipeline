@@ -1,85 +1,69 @@
 #!/usr/bin/env Rscript
 # ============================================================================
-# period_array_count_length.R — companion horizontal BARPLOTS for the merged-
-#                    array period violin (period_violin_array.R): per TRF period
-#                    bin, (a) the NUMBER of merged repeat arrays and (b) their
-#                    MEAN LENGTH.
+# period_array_count_length.R — Figure 4B: per TRF period bin, (left) the NUMBER
+#                    of merged repeat arrays and (right) their MEAN LENGTH.
 #
 #   One horizontal bar per bin; the 9 bins are stacked in the SAME order as the
-#   violin (bin 1, 1-10 bp microsatellites, at the BOTTOM; bin 9, 391+ bp, at
-#   the TOP) so the three panels line up row-for-row when the strip is placed
-#   to the LEFT of the violin.
+#   CENP-A violin (period_violin_array.R, Figure 4C): bin 1 (1-10 bp) at the
+#   BOTTOM, bin 9 (391+ bp) at the TOP, so B and C line up row-for-row when C is
+#   placed to the right of B (same height and same top/bottom plot margins).
 #
 #   Units = MERGED repeat arrays (bedtools merge -d 0 within each period bin) —
-#   the same sampling unit as period_violin_array.R. Counts and lengths are
-#   sample-independent (CUT&Tag signal is quantified at the same arrays).
+#   the same sampling unit as period_violin_array.R.
 #
-#   Both axes are log10 (counts span 233-721,950; mean lengths span 60 bp to
-#   142 kb, so a linear axis would squash the small bins into slivers). Value
-#   labels are drawn at each bar end in human-readable form. Bar colors use the
-#   same blues as the CENP-A enrichment violin (period_violin_array.R): dark
-#   #1B4F72 = rep1 for the count panel, light #7FB3D8 = rep2 for the length
-#   panel. X-axis titles read Log10(# of repeats) and Log10(mean repeat length).
-#   Panel layout, font sizes and gridlines deliberately mirror
-#   period_violin_array.R (FONT_SIZE knob, theme_minimal, x-gridlines only,
-#   9 in tall) so the strip and violin assemble into one coherent figure.
+#   Both axes are log10 (counts span 233-721,950; mean lengths 60 bp-142 kb);
+#   value labels are drawn at each bar end. Revised for Genome Research
+#   (October 2026): 8 pt Helvetica (Nimbus Sans), printed size 58 x 85 mm, the
+#   four bins that recur in Figure 4 (1-10, 193-195, 348-349, 386-390 bp) in
+#   their Figure 4 colours (config.sh FIG4_COLOR_*) and the rest grey.
 #
 #   The per-bin stats are computed from
-#     ../data/merged/arrays/merged_arrays_all_bins.bed
-#   and cached to ../results/period_array_count_length.tsv (reused when newer
-#   than the BED), so re-rendering after a plot-format tweak is instant.
+#     $FIG4_PERIOD_DIR/data/merged/arrays/merged_arrays_all_bins.bed
+#   and cached to $FIG4_PERIOD_DIR/results/period_array_count_length.tsv
+#   (reused when newer than the BED).
 #
-# Usage:
-#   conda activate r-visualizations
-#   Rscript period_array_count_length.R                    # default OUT_WIDTH x OUT_HEIGHT
-#   Rscript period_array_count_length.R 8 9                # custom WIDTH HEIGHT (inches)
-#   # omit y-axis bin labels + y-axis title (cleanest when assembled next to
-#   # the violin, which already carries the bin names):
-#   Rscript period_array_count_length.R --no-ylabels
+# Usage (r-visualizations env):
+#   Rscript period_array_count_length.R [WIDTH_MM HEIGHT_MM]
 #
-# Output size: set OUT_WIDTH / OUT_HEIGHT (inches) below, or pass WIDTH HEIGHT
-# as positional args (the notebook cell does this). Default 7.5 x 9 in (7.5
-# gives the x-axis tick labels room not to overlap). OUT_HEIGHT 9 keeps the 9
-# bin rows aligned with period_violin_array.R (both 9 in tall); changing
-# OUT_HEIGHT means re-tuning TOP_MARGIN_PT / BOTTOM_MARGIN_PT below.
-#
-# Saved: ../plots/period_array_count_length.{pdf,png,svg}
+# Saved: $FIG4_OUT_DIR/figure4B_period_array_count_length.{pdf,svg,png}
 # ============================================================================
 
 suppressPackageStartupMessages({
   library(data.table)
   library(ggplot2)
-  library(scales)
   library(patchwork)
 })
 
-PERIOD_DIR <- "/tscc/projects/ps-renlab2/jhc103/degu-genome-assembly-proj/figure/cenpa-cuttag-enrichment/period-enrichment"
+.cfg <- function(name) {
+  v <- Sys.getenv(name)
+  if (nzchar(v)) return(v)
+  arg <- grep("^--file=", commandArgs(FALSE), value = TRUE)
+  root <- normalizePath(if (length(arg)) dirname(sub("^--file=", "", arg[1])) else getwd())
+  # repo-root config.sh (next to .git): this tree also has a local cenpa-cuttag-enrichment/config.sh
+  while (!(file.exists(file.path(root, "config.sh")) && file.exists(file.path(root, ".git"))) &&
+         root != dirname(root)) root <- dirname(root)
+  cmd <- sprintf("source \"%s\" 2>/dev/null; printf \"%%s\" \"${%s}\"",
+                 file.path(root, "config.sh"), name)
+  v <- system2("bash", c("-c", shQuote(cmd)), stdout = TRUE)
+  if (length(v) == 0 || !nzchar(v)) stop(sprintf("ERROR: %s is not set in the environment or in config.sh", name))
+  v
+}
+
+PERIOD_DIR <- .cfg("FIG4_PERIOD_DIR")
 MERGED_BED <- file.path(PERIOD_DIR, "data", "merged", "arrays", "merged_arrays_all_bins.bed")
-RESULTS_DIR <- file.path(PERIOD_DIR, "results")
-CACHE <- file.path(RESULTS_DIR, "period_array_count_length.tsv")
+CACHE      <- file.path(PERIOD_DIR, "results", "period_array_count_length.tsv")
 
-# ── Optional: --no-ylabels hides the bin names (for assembly next to violin) ──
 args <- commandArgs(trailingOnly = TRUE)
-SHOW_YLABELS <- !("--no-ylabels" %in% args)
-
-# ── Font size (pt) — single knob, matches period_violin_array.R ───────────────
-FONT_SIZE <- 12
-
-# ── Output size (inches) — set to whatever you want to save out ───────────────
-# Default 7.5 x 9 gives the x-axis tick labels (100, 1k, ...) enough room not
-# to overlap at FONT_SIZE 12. OUT_HEIGHT 9 keeps the bin rows aligned with
-# period_violin_array.R (changing it means re-tuning TOP_MARGIN_PT below).
-# Two optional positional args override these, so the notebook cell can save at
-# a custom size:  Rscript period_array_count_length.R WIDTH HEIGHT
-OUT_WIDTH  <- 7.5
-OUT_HEIGHT <- 9
-pos_args <- args[!args %in% "--no-ylabels"]
-if (length(pos_args) >= 1) OUT_WIDTH  <- as.numeric(pos_args[1])
-if (length(pos_args) >= 2) OUT_HEIGHT <- as.numeric(pos_args[2])
+FONT_SIZE <- 8                                       # pt at final print size; Genome Research: 8-10 pt
+PANEL_W   <- (if (length(args) >= 1) as.numeric(args[1]) else 58) / 25.4   # in
+PANEL_H   <- (if (length(args) >= 2) as.numeric(args[2]) else 85) / 25.4   # in
+# Plot-area margins shared with period_violin_array.R so the 9 rows align (pt)
+TOP_MARGIN_PT    <- 15.8   # pt; puts the plot-area top level with Figure 4A (measured), so A, B, C share one row
+BOTTOM_MARGIN_PT <- 2
 
 BIN_LABELS <- c(
-  "1" = "1–10 bp\nmicrosatellites",
-  "2" = "11–50 bp\nminisatellites",
+  "1" = "1–10 bp",
+  "2" = "11–50 bp",
   "3" = "51–192 bp",
   "4" = "193–195 bp",
   "5" = "196–347 bp",
@@ -89,19 +73,11 @@ BIN_LABELS <- c(
   "9" = "391+ bp"
 )
 ALL_BINS <- 1:9
-
-# Bar colors match the CENP-A enrichment violin (period_violin_array.R):
-# dark blue #1B4F72 = CENP-A rep1 -> count panel; light blue #7FB3D8 = rep2 -> length panel.
-BAR_FILL_COUNT  <- "#1B4F72"
-BAR_FILL_LENGTH <- "#7FB3D8"
-
-# Top margin (pt) tuned so the 9 bin rows match the period_violin_array.R
-# figure row-for-row when the strip is placed to its left (both figures are
-# 9 in = 648 pt tall; same discrete y-axis expansion; strip bin pitch must
-# equal the violin's ~59.07 pt -> panel height ~543 pt). The empty top band
-# lines up with the violin's title/legend.
-TOP_MARGIN_PT <- 51
-BOTTOM_MARGIN_PT <- 4.1
+GREY <- "#9A9A9A"
+BIN_COLORS <- c("1" = .cfg("FIG4_COLOR_1_10"), "2" = GREY, "3" = GREY,
+                "4" = .cfg("FIG4_COLOR_193_195"), "5" = GREY,
+                "6" = .cfg("FIG4_COLOR_348_349"), "7" = GREY,
+                "8" = .cfg("FIG4_COLOR_386_390"), "9" = GREY)
 
 # ── Data: per-bin count + mean length of merged repeat arrays ─────────────────
 if (!file.exists(CACHE) || file.mtime(CACHE) < file.mtime(MERGED_BED)) {
@@ -118,106 +94,80 @@ if (!file.exists(CACHE) || file.mtime(CACHE) < file.mtime(MERGED_BED)) {
 stats <- stats[bin_id %in% ALL_BINS]
 stats[, bin_label := factor(BIN_LABELS[as.character(bin_id)],
                             levels = BIN_LABELS[as.character(ALL_BINS)])]
+stats[, fill := BIN_COLORS[as.character(bin_id)]]
 
-# ── Value-label formatting ────────────────────────────────────────────────────
 count_lab <- function(x) vapply(x, function(v) {
-  if (v >= 1e6) sprintf("%.1fM", v / 1e6)          # 1.2M
-  else if (v >= 1e5) sprintf("%.0fk", v / 1e3)      # 722k, 344k
-  else if (v >= 1e3) sprintf("%.1fk", v / 1e3)      # 29.7k, 12.6k
-  else sprintf("%.0f", v)                          # 799, 233
+  if (v >= 1e5) sprintf("%.0fk", v / 1e3)
+  else if (v >= 1e3) sprintf("%.1fk", v / 1e3)
+  else sprintf("%.0f", v)
 }, character(1))
 bp_lab <- function(x) vapply(x, function(v) {
-  if (v >= 100e3) sprintf("%.0f kb", v / 1e3)      # 142 kb
-  else if (v >= 1e3) sprintf("%.1f kb", v / 1e3)    # 1.5 kb, 2.4 kb
-  else sprintf("%.0f bp", v)                        # 60 bp, 838 bp
+  if (v >= 100e3) sprintf("%.0f kb", v / 1e3)
+  else if (v >= 1e3) sprintf("%.1f kb", v / 1e3)
+  else sprintf("%.0f bp", v)
 }, character(1))
 
-# Bars drawn on a log10 axis floored at a round number below each bin's minimum
-# (100 arrays; 10 bp), so bars start at the axis origin instead of log10(0).
-FLOOR_C <- 2   # log10(100)  — count bars start at 100 arrays
-FLOOR_L <- 1   # log10(10)   — length bars start at 10 bp
-stats[, xc_count  := log10(n_arrays)   - FLOOR_C]
+# Bars start at a round floor (100 arrays; 10 bp) on the log10 axis
+FLOOR_C <- 2
+FLOOR_L <- 1
+stats[, xc_count  := log10(n_arrays)    - FLOOR_C]
 stats[, xc_length := log10(mean_length) - FLOOR_L]
 
-# ── Panel 1: number of merged repeat arrays ───────────────────────────────────
-p_count <- ggplot(stats, aes(y = bin_label, x = xc_count)) +
-  geom_col(fill = BAR_FILL_COUNT, width = 0.68) +
-  geom_text(aes(x = xc_count + 0.06, label = count_lab(n_arrays)),
-            hjust = 0, size = 0.30 * FONT_SIZE, color = "black") +
-  scale_x_continuous(
-    breaks = 0:4,
-    labels = c("100", "1k", "10k", "100k", "1M"),
-    limits = c(0, 4.7),
-    expand = expansion(mult = c(0, 0.05))
-  ) +
-  coord_cartesian(clip = "off") +
-  labs(x = expression("Log"[10] * "(# of repeats)"),
-       y = if (SHOW_YLABELS) "Repeat array bin by period size" else NULL) +
-  theme_minimal(base_size = FONT_SIZE) +
+base_theme <- theme_minimal(base_size = FONT_SIZE, base_family = "Nimbus Sans") +
   theme(
     panel.grid.major.y = element_blank(),
     panel.grid.minor = element_blank(),
     panel.grid.major.x = element_line(linewidth = 0.25, color = "grey88"),
-    axis.text.y = if (SHOW_YLABELS) {
-      element_text(size = FONT_SIZE, color = "black")
-    } else {
-      element_blank()
-    },
-    axis.ticks.y = if (SHOW_YLABELS) element_line(color = "black") else element_blank(),
     axis.text.x = element_text(size = FONT_SIZE, color = "black"),
-    axis.title.x = element_text(size = FONT_SIZE, margin = margin(t = 8), color = "black"),
-    axis.title.y = element_text(size = FONT_SIZE, color = "black"),
-    plot.margin = margin(t = TOP_MARGIN_PT, r = 14, b = BOTTOM_MARGIN_PT, l = 8)
-  )
+    axis.title.x = element_text(size = FONT_SIZE, margin = margin(t = 2), color = "black"),
+    axis.line.x = element_line(linewidth = 0.5 / .pt * 1.5, color = "black"),
+    axis.ticks.x = element_line(linewidth = 0.5 / .pt * 1.5, color = "black"),
+    axis.ticks.length.x = unit(1.5, "pt"))
 
-# ── Panel 2: mean length of merged repeat arrays (no y-axis label) ────────────
-p_length <- ggplot(stats, aes(y = bin_label, x = xc_length)) +
-  geom_col(fill = BAR_FILL_LENGTH, width = 0.68) +
-  geom_text(aes(x = xc_length + 0.06, label = bp_lab(mean_length)),
-            hjust = 0, size = 0.30 * FONT_SIZE, color = "black") +
-  scale_x_continuous(
-    breaks = 0:5,
-    labels = c("10", "100", "1k", "10k", "100k", "1M"),
-    limits = c(0, 5.2),
-    expand = expansion(mult = c(0, 0.05))
-  ) +
-  coord_cartesian(clip = "off") +
-  labs(x = expression("Log"[10] * "(mean repeat length)")) +
-  theme_minimal(base_size = FONT_SIZE) +
-  theme(
-    panel.grid.major.y = element_blank(),
-    panel.grid.minor = element_blank(),
-    panel.grid.major.x = element_line(linewidth = 0.25, color = "grey88"),
-    axis.text.y = element_blank(),
-    axis.ticks.y = element_blank(),
-    axis.text.x = element_text(size = FONT_SIZE, color = "black"),
-    axis.title.x = element_text(size = FONT_SIZE, margin = margin(t = 8), color = "black"),
-    axis.title.y = element_blank(),
-    plot.margin = margin(t = TOP_MARGIN_PT, r = 14, b = BOTTOM_MARGIN_PT, l = 8)
-  )
+bar_panel <- function(xcol, labfun, valcol, breaks, labels, lim, xlab, show_y) {
+  ggplot(stats, aes(y = bin_label, x = .data[[xcol]])) +
+    geom_col(aes(fill = fill), width = 0.68) +
+    scale_fill_identity() +
+    geom_text(aes(x = .data[[xcol]] + 0.08, label = labfun(.data[[valcol]])),
+              hjust = 0, size = FONT_SIZE / .pt, family = "Nimbus Sans", color = "black") +
+    scale_x_continuous(breaks = breaks, labels = labels, limits = c(0, lim),
+                       expand = expansion(mult = c(0, 0))) +
+    coord_cartesian(clip = "off") +
+    labs(x = xlab, y = NULL) +
+    base_theme +
+    theme(axis.text.y = if (show_y) element_text(size = FONT_SIZE, color = "black") else element_blank(),
+          plot.margin = margin(t = TOP_MARGIN_PT, r = 2, b = BOTTOM_MARGIN_PT, l = 1))
+}
 
-# ── Assemble strip (count | mean length), same 9-in height as the violin ──────
+# Counts: ticks at 100, 10k, 1M; lengths: 10 bp, 1 kb, 100 kb (every other decade, so 8 pt labels fit)
+p_count  <- bar_panel("xc_count", count_lab, "n_arrays", c(0, 2, 4), c("100", "10k", "1M"), 5.4,
+                      "Merged arrays", TRUE)
+p_length <- bar_panel("xc_length", bp_lab, "mean_length", c(0, 2, 4), c("10", "1k", "100k"), 6.4,
+                      "Mean length (bp)", FALSE)
 p <- p_count + p_length + plot_layout(ncol = 2, widths = c(1, 1))
 
-# ── Save ──────────────────────────────────────────────────────────────────────
-out_dir <- file.path(PERIOD_DIR, "plots")
+# ── Save (back up existing outputs first) ─────────────────────────────────────
+nimbus <- "/usr/share/fonts/urw-base35/NimbusSans-"
+nimbus_as_helvetica <- list(
+  plain = list(alias = "Helvetica", file = paste0(nimbus, "Regular.otf")),
+  bold = list(alias = "Helvetica", file = paste0(nimbus, "Bold.otf")),
+  italic = list(alias = "Helvetica", file = paste0(nimbus, "Italic.otf")),
+  bolditalic = list(alias = "Helvetica", file = paste0(nimbus, "BoldItalic.otf")))
+svg_user_fonts <- list("sans" = nimbus_as_helvetica, "Nimbus Sans" = nimbus_as_helvetica,
+                       "Helvetica" = nimbus_as_helvetica)
+
+out_dir <- .cfg("FIG4_OUT_DIR")
 dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
-OUT_PREFIX <- "period_array_count_length"
-
-ggsave(file.path(out_dir, paste0(OUT_PREFIX, ".pdf")), p,
-       width = OUT_WIDTH, height = OUT_HEIGHT, device = cairo_pdf)
-ggsave(file.path(out_dir, paste0(OUT_PREFIX, ".png")), p,
-       width = OUT_WIDTH, height = OUT_HEIGHT, dpi = 300, bg = "white")
-ggsave(file.path(out_dir, paste0(OUT_PREFIX, ".svg")), p,
-       width = OUT_WIDTH, height = OUT_HEIGHT, dpi = 300, bg = "white", device = svglite::svglite)
-
-# ── Console summary ───────────────────────────────────────────────────────────
-cat("\nMerged repeat arrays per period bin:\n")
-cat(sprintf("%-6s %-30s %10s %12s\n", "Bin", "Label", "n_arrays", "mean_len_bp"))
-cat(strrep("-", 60), "\n")
-for (b in ALL_BINS) {
-  r <- stats[bin_id == b]
-  cat(sprintf("%-6s %-30s %10s %12.1f\n", b, BIN_LABELS[as.character(b)],
-              format(r$n_arrays, big.mark = ","), r$mean_length))
+out_stem <- file.path(out_dir, "figure4B_period_array_count_length")
+stamp <- format(Sys.time(), "%Y%m%d-%H%M%S")
+for (ext in c("pdf", "svg", "png")) {
+  f <- paste0(out_stem, ".", ext)
+  if (file.exists(f)) file.rename(f, paste0(f, ".pre-", stamp))
 }
-message(sprintf("\nSaved: %s.pdf / .png / .svg", OUT_PREFIX))
+ggsave(paste0(out_stem, ".pdf"), p, width = PANEL_W, height = PANEL_H, units = "in", device = cairo_pdf)
+ggsave(paste0(out_stem, ".svg"), p, width = PANEL_W, height = PANEL_H, units = "in", user_fonts = svg_user_fonts)
+ggsave(paste0(out_stem, ".png"), p, width = PANEL_W, height = PANEL_H, units = "in", dpi = 600, bg = "white")
+
+cat("\nMerged repeat arrays per period bin:\n")
+print(stats[, .(bin_id, bin = as.character(bin_label), n_arrays, mean_length = round(mean_length, 1))])
+cat(sprintf("Saved: %s.{pdf,svg,png} (%.0f x %.0f mm)\n", out_stem, PANEL_W * 25.4, PANEL_H * 25.4))

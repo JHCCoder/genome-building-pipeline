@@ -12,6 +12,7 @@ export EMAIL="you@example.com"              # your email for job notifications
 
 # --- Top-level directories ----------------------------------------------------
 export PROJ_ROOT="/tscc/projects/ps-renlab2/jhc103/degu-genome-assembly-proj"
+export REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"   # this repository (for outputs kept with the code)
 export DATA_DIR="$PROJ_ROOT/data"
 export OUTPUT_DIR="$PROJ_ROOT/output"
 export CODE_DIR="$PROJ_ROOT/code"
@@ -66,13 +67,26 @@ export MITO_FASTA="$DATA_DIR/denovo_OctDegus_genome/degu_mitochondria/octDeg1_mi
 export MITO_BLAST_ASSEMBLY="$DATA_DIR/denovo_OctDegus_genome/041425-assembly/hifiasm-041425-assembly/deNovo_hifiHiCMode_hifiData_aggressivePurge3_kmer21_041325.asm.hic.p_ctg.fa"
 
 # Sex-chromosome identification
-export SRY_GENE="$CODE_DIR/command-line-script/assigning-chromosomes/sry-gene/all_sry_gene.fasta"
+export SRY_GENE="$REPO_DIR/01-genome-assembly/04-sexChr-identification/all_sry_gene.fasta"   # 14 NCBI Sry/SRY mRNAs (BLAST query)
 export SRY_BLAST_ASSEMBLY="$DATA_DIR/denovo_OctDegus_genome/041425-assembly/hifiasm-041425-assembly-mitoFiltered-scaffolded-curated-masked/assembly_final.sorted.headerRenamed.fasta.masked"
 
 # Synteny to sex chromosomes (JCVI / MCScanX)
 export MOUSE_GENOME_FA="$DATA_DIR/GRCm39_genome/GCF_000001635.27_GRCm39_genomic.fna"
 export DEGU_LIFTOFF_GFF="$OUTPUT_DIR/outputs-from-liftoff/hifiasm-041425-scaffolded/hifiasm-041425-scaffolded.gff"
 export DEGU_SCAFFOLDS_FA="$DATA_DIR/denovo_OctDegus_genome/041425-assembly/hifiasm-041425-assembly-mitoFiltered-scaffolded/scaffolds.fa"
+# Figure 1C: the JCVI run whose seqids/BED/anchors are mutually consistent (HapHiC groupN = scaffold N).
+# figure/jcvi-synteny-plot/ is a copy, but its degus.bed was later overwritten by the squirrel run.
+export JCVI_KARYOTYPE_DIR="$PROJ_ROOT/code/command-line-script/jcvi-analysis/MCscan/hifi041425scaf-GRCm38-mouse-degu"
+export FIG1C_OUT_DIR="$REPO_DIR/01-genome-assembly/04-sexChr-identification/01-synteny-to-sex-chr/figure1C"
+# Figure 1D: per-scaffold mean coverage (long/short reads, full and hard-masked assembly)
+export PRIMARY_COVERAGE_DIR="$PROJ_ROOT/code/command-line-script/contig-coverage/2-primaryreads-coverage"
+export FIG1D_OUT_DIR="$REPO_DIR/01-genome-assembly/04-sexChr-identification/figure1D"
+# Figure 1E: DiscoverY per-scaffold proportion of k-mers absent from the female k-mer set
+# (columns: name, length, proportion, depth; written by 03_kmer_overlap_analysis.sh, headers cut with grep)
+export DISCOVERY_PROPORTIONS="/tscc/projects/ps-renlab2/jhc103/toolshed/DiscoverY/proportion_annotated_contigs_scaffolded_grepCutHeaders.fasta"
+export SRY_BLAST_XML="$CODE_DIR/command-line-script/assigning-chromosomes/sry-gene/results_for_kablammo.xml"   # 04_blastSryGenes.sh output (-outfmt 5)
+export FIG1F_OUT_DIR="$REPO_DIR/01-genome-assembly/04-sexChr-identification/figure1F"
+export FIG1E_OUT_DIR="$REPO_DIR/01-genome-assembly/04-sexChr-identification/figure1E"
 
 # -----------------------------------------------------------------------------
 # Comparative genomes (tandem-repeat comparison across species).
@@ -316,3 +330,56 @@ export INSPECTOR_ASM="$MITO_ASSEMBLY"              # scaffolded, chr-assigned, m
 export INSPECTOR_HIFI_READS="$SCRATCH_DIR/hifi/male/*/*fastq.gz"   # unquoted in the script to expand the glob
 export INSPECTOR_REF="$DATA_DIR/OctDegus1_genome/OctDeg1/fasta/genome.fa"  # optional reference (reference-based mode)
 export INSPECTOR_OUT_DIR="$OUTPUT_DIR/outputs-from-inspector"
+
+# -----------------------------------------------------------------------------
+# Figure 2B: gene (Liftoff, BRAKER3) and repeat (RepeatMasker) density along the chromosome-assigned assembly
+export FIG2B_FAI="$DATA_DIR/denovo_OctDegus_genome/041425-assembly/hifiasm-041425-assembly-mitoFiltered-scaffolded-curated-masked-chrNameAssigned/assembly_final.sorted.headerRenamed.chrAssigned.hardMasked.fasta.fai"
+export FIG2B_LIFTOFF_GFF="$OUTPUT_DIR/outputs-from-liftoff/hifiasm-041425-scaffolded-chrAssigned/hifiasm-041425-scaffolded-chrAssigned.gff"
+export FIG2B_BRAKER_GFF="$CODE_DIR/command-line-script/genome-annotation/annotate-braker3-results/annotate-gff/braker.uniprotBlast.interproscan.gff/braker.gff3"
+export FIG2B_REPEAT_GFF="$PROJ_ROOT/figure/circos-plot/feature-overview/assembly_final.sorted.headerRenamed.fasta.out.chr.gff"
+export FIG2B_OUT_DIR="$REPO_DIR/04-genome-annotation-initial-evaluation/figure2B"
+export FIG2B_DENSITY_TSV="$FIG2B_OUT_DIR/figure2B_density_1Mb.tsv"   # cache written by 02_prepare_figure2B_density.py
+# Figure 2C: five-category breakdown of the final annotation (pie)
+export FIG2C_LIFTOFF_GFF="$OUTPUT_DIR/outputs-from-liftoff/hifiasm-041425-scaffolded-chrAssigned-mito/hifiasm-041425-scaffolded-chrAssigned-mito.gff"   # reference gene names: novel vs characterized
+export FIG2C_OUT_DIR="$REPO_DIR/04-genome-annotation-initial-evaluation/01-annotation-piechart-breakdown/figure2C"
+# Figure 2D/E: GO BP enrichment of the novel genes (degu background), clustered with rrvgo
+# Novel-gene list and enrichment regenerated 2026-10-11 from $FINAL_ANNOTATION_GFF (03_go_enrichment_novel_genes.py).
+# The Aug 2026 inputs are kept but superseded: figure/annotation-explanation/novel_genes.tsv is header-only, and
+# figure/GO-terms-annotation/GO_terms_novel_genes_degubg.tsv predates the Option B parent reassignment.
+export FIG2_GMT_DIR="$PROJ_ROOT/figure/GO-terms-annotation"   # human_GO_{bp,mf,cc}_2025.gmt (Enrichr 2025 libraries)
+export FIG2_NOVEL_GENES_TSV="$REPO_DIR/04-genome-annotation-initial-evaluation/figure2DE/novel_genes_final_annotation.tsv"
+export FIG2_GO_TSV="$REPO_DIR/04-genome-annotation-initial-evaluation/figure2DE/GO_terms_novel_genes_degubg.tsv"
+export ENV_GO_ANALYSIS="go-analysis"
+export FIG2DE_OUT_DIR="$REPO_DIR/04-genome-annotation-initial-evaluation/figure2DE"
+export FIG2DE_CLUSTERS_TSV="$FIG2DE_OUT_DIR/go_bp_clusters_degubg.tsv"   # cache written by 04_prepare_figure2DE_go_clusters.R
+export ENV_R_CLUSTERPROFILER="r-clusterProfiler"
+# Figure 3: OctDeg1.0 vs OctDeg2.0 comparison (04-.../08-genome-comparison-with-octDeg1)
+export FIG3_PAF="$PROJ_ROOT/figure/align-octDeg1-hifiasm-minimap2/alignment_octDeg1_hifi041425.paf"   # minimap2 -x asm5, query OctDeg2.0, target OctDeg1.0
+export FIG3_OUT_DIR="$REPO_DIR/04-genome-annotation-initial-evaluation/08-genome-comparison-with-octDeg1/figure3"
+export FIG3_COLOR_OCTDEG1="#999999"   # grey  = old assembly (all Figure 3 panels)
+export FIG3_COLOR_OCTDEG2="#0072B2"   # Okabe-Ito blue = new assembly
+export FIG3_ALIGNED_BED="$PROJ_ROOT/figure/align-octDeg1-hifiasm-minimap2/hifi041425_alignment.bed"   # OctDeg2.0-side aligned intervals
+export FIG3_CHROM_FAI="$DATA_DIR/denovo_OctDegus_genome/041425-assembly/hifiasm-041425-assembly-mitoFiltered-scaffolded-curated-masked-chrNameAssigned/assembly_final.sorted.headerRenamed.chrAssigned.fasta.fai"
+
+# -----------------------------------------------------------------------------
+# Figure 4: CENP-A enrichment and domain organization of degu tandem repeats
+export FIG4_OUT_DIR="$REPO_DIR/06-tandem-repeat-analysis/figure4"
+export FIG4_TRF_TABLE="$PROJ_ROOT/figure/tandem-repeat-investigation/repeat_df_degu.tsv"   # parsed TRF .dat (check_tandem_repeats_degu.ipynb)
+# Period-family colours shared by all Figure 4 panels (Okabe-Ito)
+export FIG4_COLOR_1_10="#CC79A7"      # 1-10 bp microsatellites (reddish purple)
+export FIG4_COLOR_193_195="#009E73"   # 193-195 bp (bluish green)
+export FIG4_COLOR_348_349="#0072B2"   # 348-349 bp (blue)
+export FIG4_COLOR_386_390="#D55E00"   # 386-390 bp (vermillion)
+export FIG4_PERIOD_DIR="$PROJ_ROOT/figure/cenpa-cuttag-enrichment/period-enrichment"   # TRF period-bin pipeline (data/, results/)
+export FIG4_INTERVAL_DIR="$PROJ_ROOT/figure/cenpa-repeat-chromosome"            # peak-based CENP-A domains, weighted coverage, TRF occupancy
+export FIG4_CHROM_SIZES="$PROJ_ROOT/figure/cenpa-cuttag-enrichment/data/chrom_sizes.txt"
+export FIG4_HIFI_PRIMARY_15KB="$CODE_DIR/command-line-script/contig-coverage/2-primaryreads-coverage/coverage_long_read_hifiasm_041425_scaffolded_juiceBox_sorted_chrAssigned_primaryReads_15kb_windows.tsv"
+export FIG4_HIFI_ALL_15KB="$CODE_DIR/command-line-script/contig-coverage/1-allreads-coverage/coverage_long_read_hifiasm_041425_scaffolded_juiceBox_sorted_chrAssigned_15kb_windows.tsv"
+export FIG4_INTERVALS_TSV="$FIG4_OUT_DIR/figure4DE_interval_metrics.tsv"   # cache written by 11_prepare_figure4DE_intervals.py
+
+# -----------------------------------------------------------------------------
+# Figure 5: segmental duplication analysis (07-segmental-duplication-analysis/02_analysis)
+export FIG5_OUT_DIR="$REPO_DIR/07-segmental-duplication-analysis/figure5"
+export FIG5_SEGDUP_COUNTS_TSV="$REPO_DIR/07-segmental-duplication-analysis/02_analysis/merged_segdup_with_feature_counts.tsv"   # per merged region feature counts (05 notebook cache)
+export FIG5_SEGDUP_BEDPE="$CODE_DIR/command-line-script/genome-annotation/biser/hifiasm-041425/segdup_output_duplicateLinkRemoved.bedpe"
+export FIG5_FAI="$DATA_DIR/denovo_OctDegus_genome/041425-assembly/hifiasm-041425-assembly-mitoFiltered-scaffolded-curated-masked-chrNameAssigned/assembly_final.sorted.headerRenamed.chrAssigned.hardMasked.mito.fasta.fai"

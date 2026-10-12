@@ -1,39 +1,60 @@
 #!/usr/bin/env python3
 """
-Panel A of Figure 3 — whole-genome collinearity scatterplot between the new
-OctDeg2.0 assembly (query; hifiasm-041425) and the OctDeg1.0 reference
-(target), obtained with minimap2 (-x asm5).
+Panel A of Figure 3 — whole-genome collinearity between the new OctDeg2.0
+assembly (query; hifiasm-041425) and the OctDeg1.0 reference (target),
+aligned with minimap2 (-x asm5).
 
-Each point is one alignment. The x-axis concatenates the OctDeg2.0
+Each alignment is drawn as a segment. The x-axis concatenates the OctDeg2.0
 chromosomes in natural order; the y-axis orders and orients the OctDeg1.0
-contigs so that collinear alignments run along the diagonal. Points are
-colored by the OctDeg2.0 chromosome they map to. Only high-confidence
-alignments (mapq >= MAPQ_MIN, alignment length >= ALN_LEN_MIN) are shown, and
-optionally only alignments matching each contig's dominant strand (syntenic).
+contigs so that collinear alignments run along the diagonal. Only
+high-confidence alignments (mapq >= MAPQ_MIN, alignment length >= ALN_LEN_MIN)
+are shown, and optionally only alignments on each contig's dominant strand
+(syntenic).
+
+Drawn at printed size for Genome Research (8 pt text, no title). Chromosomes
+are labelled by number under the x-axis (two staggered rows) and shaded in
+alternating tones of the OctDeg2.0 colour, instead of a 30-entry colour key.
 
 Port of figure/align-octDeg1-hifiasm-minimap2/visualize_paf_clean_collinearity.ipynb.
 
-Inputs (see PATHS below):
-  * minimap2 -x asm5 PAF (query = OctDeg2.0, target = OctDeg1.0)
+Inputs: $FIG3_PAF (config.sh). Outputs: $FIG3_OUT_DIR/figure3A_alignment_dotplot.{pdf,svg,png}
 
-Output (written next to this script):
-  figure3A_alignment_scatterplot.png
-
-Run with an env that has pandas/numpy/natsort/matplotlib (e.g. genome-assembly):
-
-    conda activate genome-assembly
-    python 01_alignment_scatterplot.py
+Run with the python-visualizations env:
+    python 01_alignment_scatterplot.py [--width-mm 110] [--height-mm 95]
 """
 
+import argparse
+import os
 import re
-from pathlib import Path
+import subprocess
+import sys
+import time
 
 import numpy as np
 import pandas as pd
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-import matplotlib.patches as mpatches
+from matplotlib.collections import LineCollection
+
+
+def _cfg(name):
+    val = os.environ.get(name)
+    if val:
+        return val
+    root = os.path.abspath(os.path.dirname(__file__))
+    while not os.path.isfile(os.path.join(root, "config.sh")) and root != os.path.dirname(root):
+        root = os.path.dirname(root)
+    # Source config.sh in a subshell so nested $VAR references are expanded.
+    val = subprocess.check_output(
+        ["bash", "-c", f'source "$1" 2>/dev/null; printf "%s" "${{{name}}}"', "_",
+         os.path.join(root, "config.sh")],
+        text=True,
+    )
+    if not val:
+        sys.exit(f"ERROR: {name} is not set in the environment or in config.sh")
+    return val
+
 
 # ---------------------------------------------------------------------------
 # RUN PARAMETERS
@@ -41,21 +62,20 @@ import matplotlib.patches as mpatches
 MAPQ_MIN = 60            # keep primary, high-confidence mappings only
 ALN_LEN_MIN = 10_000     # bp; drop short / repetitive noise
 SYNTENIC_ONLY = True     # keep only alignments matching each contig's dominant strand
-DOT_SIZE = 3
-DPI = 300
+FONT_SIZE = 8            # pt at final print size; Genome Research: 8-10 pt
+SEG_LW = 0.8             # pt; alignment segments
+COLOR_A = _cfg("FIG3_COLOR_OCTDEG2")   # OctDeg2.0 blue; alternate chromosomes use the light tint
+COLOR_B = "#7FB8DE"
 
-# ---------------------------------------------------------------------------
-# PATHS
-# ---------------------------------------------------------------------------
-# Project root — edit for your environment.
-PROJ_ROOT = "/tscc/projects/ps-renlab2/jhc103/degu-genome-assembly-proj"
+ap = argparse.ArgumentParser()
+ap.add_argument("--width-mm", type=float, default=110)
+ap.add_argument("--height-mm", type=float, default=95)
+opts = ap.parse_args()
+PANEL_W, PANEL_H = opts.width_mm / 25.4, opts.height_mm / 25.4
 
-# This script's directory (all outputs are written here).
-HERE = Path(__file__).resolve().parent
-
-PAF = f"{PROJ_ROOT}/figure/align-octDeg1-hifiasm-minimap2/alignment_octDeg1_hifi041425.paf"
-
-OUT_PNG = str(HERE / "figure3A_alignment_scatterplot.png")
+out_dir = _cfg("FIG3_OUT_DIR")
+os.makedirs(out_dir, exist_ok=True)
+out_stem = os.path.join(out_dir, "figure3A_alignment_dotplot")
 
 
 def natural_key(s):
@@ -67,7 +87,7 @@ def natural_key(s):
 # ============================================================
 cols = ["qname", "qlen", "qstart", "qend", "strand", "tname",
         "tlen", "tstart", "tend", "matches", "aln_len", "mapq"]
-raw = pd.read_csv(PAF, sep="\t", header=None, usecols=range(12), names=cols)
+raw = pd.read_csv(_cfg("FIG3_PAF"), sep="\t", header=None, usecols=range(12), names=cols)
 raw = raw[~raw["qname"].str.contains("seq")].copy()          # drop tiny unplaced scaffolds
 for c in ["qname", "tname"]:
     raw[c] = raw[c].astype(str)
@@ -145,49 +165,79 @@ if SYNTENIC_ONLY:
     df_plot = df[kept].copy()
 else:
     df_plot = df.copy()
+print(f"contigs drawn (y-axis): {df_plot['tname'].nunique():,}")
 
 # ============================================================
-# Whole-genome figure
+# Figure at printed size
 # ============================================================
-color_of = dict(zip(chr_order, plt.cm.turbo(np.linspace(0, 1, len(chr_order)))))
+plt.rcParams.update({
+    "font.family": "sans-serif", "font.sans-serif": ["Helvetica", "Arial", "Nimbus Sans"],
+    "font.size": FONT_SIZE, "axes.labelsize": FONT_SIZE,
+    "xtick.labelsize": FONT_SIZE, "ytick.labelsize": FONT_SIZE,
+    "axes.linewidth": 0.5, "xtick.major.width": 0.5, "ytick.major.width": 0.5,
+    "xtick.major.size": 2.5, "ytick.major.size": 2.5,
+    "svg.fonttype": "none", "pdf.fonttype": 42,
+})
+LEFT_IN, RIGHT_IN, TOP_IN, BOTTOM_IN = 0.42, 0.06, 0.05, 0.52
+fig = plt.figure(figsize=(PANEL_W, PANEL_H))
+ax = fig.add_axes((LEFT_IN / PANEL_W, BOTTOM_IN / PANEL_H,
+                   1 - (LEFT_IN + RIGHT_IN) / PANEL_W, 1 - (TOP_IN + BOTTOM_IN) / PANEL_H))
 
-fig, ax = plt.subplots(figsize=(11, 9))
-
-for c in chr_order:
-    sub = df_plot[df_plot["qname"] == c]
-    ax.scatter(sub["x"], sub["y"], s=DOT_SIZE, alpha=0.65, color=color_of[c],
-               linewidths=0, edgecolors="none")
-
-# chromosome boundary lines
-for x0 in np.r_[0, chr_len.cumsum().values]:
-    ax.axvline(x0, color="0.45", lw=0.6, ls="--", alpha=0.7)
+# chromosome boundaries (x) and OctDeg2.0-chromosome bands of OctDeg1.0 contigs (y)
+for x0 in chr_len.cumsum().values[:-1]:
+    ax.axvline(x0, color="#DDDDDD", lw=0.4, zorder=0)
 band = {}
 for t in sorted_contigs:
-    c = prim_chr[t]
-    if c not in band:
-        band[c] = y_off[t]
-for y0 in sorted(band.values()):
-    ax.axhline(y0, color="0.45", lw=0.6, ls="--", alpha=0.7)
+    band.setdefault(prim_chr[t], y_off[t])
+for y0 in sorted(band.values())[1:]:
+    ax.axhline(y0, color="#DDDDDD", lw=0.4, zorder=0)
+
+for i, c in enumerate(chr_order):
+    sub = df_plot[df_plot["qname"] == c]
+    segs = np.stack([sub[["x", "y"]].values, sub[["xend", "yend"]].values], axis=1)
+    ax.add_collection(LineCollection(segs, colors=COLOR_A if i % 2 == 0 else COLOR_B,
+                                     linewidths=SEG_LW, capstyle="round", zorder=2))
 
 ax.set_xlim(0, GENOME_X)
 ax.set_ylim(0, y_total)
-xt = np.arange(0, GENOME_X, 2.5e8)
-yt = np.arange(0, y_total, 2.5e8)
-ax.set_xticks(xt, [f"{int(t/1e6)} Mb" for t in xt], rotation=45, fontsize=13)
-ax.set_yticks(yt, [f"{int(t/1e6)} Mb" for t in yt], fontsize=13)
+yt = np.arange(0, y_total, 5e8)
+ax.set_yticks(yt, [f"{t/1e9:g}" for t in yt])
+ax.set_ylabel("OctDeg1.0 contigs, ordered and oriented (Gb)", labelpad=2)
+ax.set_xticks(chr_len.cumsum().values[:-1])
+ax.tick_params(axis="x", labelbottom=False, length=2)
+for side in ("top", "right"):
+    ax.spines[side].set_visible(False)
 
-ax.set_xlabel(f"OctDeg2.0 assembly, concatenated ({len(chr_order)} aligned chromosomes)", fontsize=15)
-ax.set_ylabel(f"OctDeg1.0 assembly, ordered & oriented ({len(sorted_contigs):,} aligned contigs)", fontsize=15)
-ax.set_title(f"Whole-genome collinearity: OctDeg1.0 (female) vs OctDeg2.0\n"
-             f"mapq>={MAPQ_MIN}, aln_len>={ALN_LEN_MIN:,}"
-             + (", syntenic-only" if SYNTENIC_ONLY else ""),
-             fontsize=17, pad=22)
+# chromosome numbers under the x-axis, alternating between two rows
+row_y = [-0.012, -0.012 - 0.13 / (PANEL_H - TOP_IN - BOTTOM_IN)]
+for i, c in enumerate(chr_order):
+    xc = (chr_x0[c] + chr_len[c] / 2) / GENOME_X
+    ax.text(xc, row_y[i % 2], c.replace("chr", ""), transform=ax.transAxes,
+            ha="center", va="top")
+ax.text(0.5, row_y[1] - 0.11 / (PANEL_H - TOP_IN - BOTTOM_IN), "OctDeg2.0 chromosome",
+        transform=ax.transAxes, ha="center", va="top")
 
-handles = [mpatches.Patch(color=color_of[c], label=c) for c in chr_order]
-ax.legend(handles=handles, title="OctDeg2.0\nscaffolds", ncol=1,
-          fontsize=8, title_fontsize=10,
-          bbox_to_anchor=(1.02, 1.0), loc="upper left", borderaxespad=0.)
+# Within each row, push crowded labels apart (small chromosomes 24-28) to keep a ~0.8 mm gap
+fig.canvas.draw()
+r = fig.canvas.get_renderer()
+labels = ax.texts[:len(chr_order)]
+gap = 0.03 / (PANEL_W - LEFT_IN - RIGHT_IN)                      # axes fraction
+for row in (labels[0::2], labels[1::2]):
+    w = [t.get_window_extent(r).transformed(ax.transAxes.inverted()).width for t in row]
+    xs = [t.get_position()[0] for t in row]
+    for i in range(1, len(xs)):
+        xs[i] = max(xs[i], xs[i - 1] + (w[i - 1] + w[i]) / 2 + gap)
+    for i in range(len(xs) - 1, -1, -1):
+        lim = 1.0 - w[i] / 2 if i == len(xs) - 1 else xs[i + 1] - (w[i] + w[i + 1]) / 2 - gap
+        xs[i] = min(xs[i], lim)
+    for t, x in zip(row, xs):
+        t.set_x(x)
+    assert all(b - a >= (w[i] + w[i + 1]) / 2 + gap * 0.99
+               for i, (a, b) in enumerate(zip(xs, xs[1:]))), "chromosome labels overlap"
 
-fig.tight_layout()
-fig.savefig(OUT_PNG, dpi=DPI, bbox_inches="tight")
-print("saved:", OUT_PNG)
+for ext in ("pdf", "svg", "png"):
+    path = f"{out_stem}.{ext}"
+    if os.path.exists(path):
+        os.replace(path, f"{path}.pre-{time.strftime('%Y%m%d-%H%M%S')}")
+    fig.savefig(path, dpi=600)
+print(f"{out_stem}.{{pdf,svg,png}}  ({opts.width_mm:.0f} x {opts.height_mm:.0f} mm)")

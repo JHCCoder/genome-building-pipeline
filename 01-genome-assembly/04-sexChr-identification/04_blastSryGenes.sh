@@ -30,4 +30,8 @@ sry_gene="$SRY_GENE"
 # If a blast db has not been built for this assembly yet, uncomment:
 # makeblastdb -in "$assembly" -dbtype nucl
 
-blastn -query "$sry_gene" -db "$assembly" -outfmt 5 -out results_for_kablammo.xml
+# XML output (-outfmt 5) is read by 04_plot_figure1F_sry_blast.py via $SRY_BLAST_XML.
+# Keep any previous result as a timestamped backup instead of overwriting it.
+out_xml="$SRY_BLAST_XML"
+[[ -e "$out_xml" ]] && mv "$out_xml" "$out_xml.pre-$(date +%Y%m%d-%H%M%S)"
+blastn -query "$sry_gene" -db "$assembly" -outfmt 5 -out "$out_xml"

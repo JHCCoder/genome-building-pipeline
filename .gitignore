@@ -17,6 +17,9 @@ __pycache__/
 *RESULTS*.txt
 *results*.txt
 *paralogs*.txt
+# Figure legend drafts (manuscript text, never committed)
+*legend*.txt
+*LEGEND*.txt
 
 # Collaborator-facing provenance table (not part of this project's publication code)
 04-genome-annotation-initial-evaluation/09-perfect-gff-octdeg1-provenance/
@@ -43,3 +46,13 @@ _test_*
 *provenance*.txt
 04-genome-annotation-initial-evaluation/07-paralog-loci-read-depth/04c_segdup_elevated_coverage_claim_check.txt
 04-genome-annotation-initial-evaluation/07-paralog-loci-read-depth/04d_segdup_elevated_coverage_summary.txt
+
+# Kept private (not for GitHub): data tables written by the figure scripts, and the Claude Code notes
+CLAUDE.md
+01-genome-assembly/04-sexChr-identification/01-synteny-to-sex-chr/figure1C/
+04-genome-annotation-initial-evaluation/01-annotation-piechart-breakdown/figure2C/
+04-genome-annotation-initial-evaluation/figure2B/
+04-genome-annotation-initial-evaluation/figure2DE/
+04-genome-annotation-initial-evaluation/08-genome-comparison-with-octDeg1/figure3/
+06-tandem-repeat-analysis/figure4/
+07-segmental-duplication-analysis/figure5/

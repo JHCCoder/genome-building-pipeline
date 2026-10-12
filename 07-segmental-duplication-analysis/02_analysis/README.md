@@ -1,6 +1,6 @@
 # 07-segmental-duplication-analysis
 
-Detect segmental duplications (SDs) with BISER and produce the Figure 7 analysis
+Detect segmental duplications (SDs) with BISER and produce the Figure 5 analysis
 (cumulative-length "pervasive" region, gene overlap, GO enrichment, pyCirclize
 circos, and paralog expression).
 
@@ -13,12 +13,25 @@ circos, and paralog expression).
 | 2b | `02_segdup_per_chromosome.ipynb` | per-chromosome segdup summary (intra/inter counts, scores, merged coverage, % of chromosome) |
 | 3 | `03_understanding_segdup_output.ipynb` | inspect raw BEDPE, drop reciprocal duplicates → `segdup_output_duplicateLinkRemoved.bedpe` |
 | 4 | `04_segdup_gene_overlap.ipynb` | gene × SD overlap (agat GFF) → `hifiasm_gene_segDup_overlapInfo_092525.tsv` |
-| 5 | `05_cumulative_feature_overlap.ipynb` | cumulative-length plot, 80% "pervasive" region, feature overlap (**Fig 7A**) |
-| 6 | `06_go_enrichment.ipynb` | GO enrichment of pervasive-region genes (**Fig 7B**) |
+| 5 | `05_cumulative_feature_overlap.ipynb` | cumulative-length plot, 80% "pervasive" region, feature overlap (input to **Fig 5A**) |
+| 6 | `06_go_enrichment.ipynb` | GO enrichment of pervasive-region genes (input to **Fig 5B**) |
 | 7 | `07_separate_gff.ipynb` | split the agat GFF into `nc` / `gr` / `ga` gene tracks |
-| 8 | `08_circos_pyCirclize.ipynb` | pyCirclize circos of pervasive region + genes of interest (**Fig 7C**) |
+| 8 | `08_circos_pyCirclize.ipynb` | pyCirclize circos of pervasive region + genes of interest (earlier circos; final panel: `11b`) |
 | 9 | `09_rna_seq_level.sh` | STAR index / RNA-seq level inputs (CCT7 paralogs) |
-| 10 | `10_expression_heatmap_R.ipynb` | paralog expression heatmap across 29 samples / 5 organs (**Fig 7D**) |
+| 10 | `10_expression_heatmap_R.ipynb` | paralog expression heatmap across 29 samples / 5 organs (earlier heatmap version; not in the final figure) |
+
+### Figure 5 panel scripts (printed size, 8 pt; outputs in `../figure5/`)
+
+| Panel | Script | Reads |
+|---|---|---|
+| A | `05b_plot_figure5A_cumulative.py` | `merged_segdup_with_feature_counts.tsv` (step 5 cache) + `$SEGDUP_GENE_OVERLAP_TSV` |
+| B | `06b_plot_figure5B_go_dotplot.py` | `go_enrichment_results_segdup_hotspot_seqRemoved_80percLength.csv` (step 6) |
+| C | `11b_plot_figure5C_circos.py` | BISER BEDPE, `segdup_density_rolling_5000000_100000_bpLevel_hotspot80perc.tsv`, `segdup_genes_hotspots_80percLength.tsv`, `merged_paralog_singlecopy_families.tsv` |
+| D | `12b_plot_figure5D_expression_violin.py` | `merged_paralog_singlecopy_counts.tsv`, `merged_paralog_singlecopy_families.tsv` |
+
+"Largest SegDups" (file names say `hotspot80perc` / `80percLength`) = the 1,425 longest merged
+regions whose cumulative length is <= 80% of total SegDup length (28,961 regions); they overlap
+1,271 genes (469 non-LOC symbols used for GO enrichment). No evolutionary "hotspot" claim is implied.
 
 ## Inputs
 

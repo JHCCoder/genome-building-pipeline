@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Build the merged paralog + single-copy tables used by the expression figures.
 
-`12_expression_violin_for_genes_of_interest.ipynb` (Figure 7F) reads ONLY these two merged
+`12_expression_violin_for_genes_of_interest.ipynb` and `12b_plot_figure5D_expression_violin.py` (Figure 5D) reads ONLY these two merged
 tables -- not `paralog_families*` directly -- so they must be rebuilt whenever
 the paralog tables or the annotation change, or the figure silently keeps the
 previous gene names.
