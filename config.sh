@@ -360,6 +360,20 @@ export FIG3_COLOR_OCTDEG1="#999999"   # grey  = old assembly (all Figure 3 panel
 export FIG3_COLOR_OCTDEG2="#0072B2"   # Okabe-Ito blue = new assembly
 export FIG3_ALIGNED_BED="$PROJ_ROOT/figure/align-octDeg1-hifiasm-minimap2/hifi041425_alignment.bed"   # OctDeg2.0-side aligned intervals
 export FIG3_CHROM_FAI="$DATA_DIR/denovo_OctDegus_genome/041425-assembly/hifiasm-041425-assembly-mitoFiltered-scaffolded-curated-masked-chrNameAssigned/assembly_final.sorted.headerRenamed.chrAssigned.fasta.fai"
+# Figure 3D: scMultiome on matched gene models (OctDeg1.0 RefSeq vs its Liftoff onto OctDeg2.0)
+export FIG3D_OCTDEG1_CR_REF="/tscc/projects/ps-renlab2/jhc103/rosetta-stone-proj/data/OctDegus1_genome/OctDeg1"   # Cell Ranger ARC ref used by every OctDeg1 run (RefSeq, protein-coding filtered)
+export FIG3D_LIFTOFF_GFF="$OUTPUT_DIR/outputs-from-liftoff/hifiasm-041425-scaffolded-chrAssigned-mito/hifiasm-041425-scaffolded-chrAssigned-mito.gff"   # Liftoff of OctDeg1.0 RefSeq onto MITO_ASSEMBLY
+export FIG3D_CR_DIR="$OUTPUT_DIR/outputs-from-cellranger-arc"
+export FIG3D_LIFTOFF_GTF="$FIG3D_CR_DIR/octDeg2-liftoffOnly-gtf/OctDeg2_liftoffOnly_matchedToOctDeg1.gtf"   # written by 05_build_liftoff_only_gtf.py
+export FIG3D_OCTDEG2_CR_REF="$FIG3D_CR_DIR/OctDeg2_liftoffOnly"   # written by 06_cellranger_arc_mkref_liftoff.sh
+export FIG3D_MULTIOME_FASTQ_DIR="/tscc/lustre/ddn/scratch/nzemke/multiome/degu/fastq"   # readable copy of the scMultiome FASTQs (the nfs-home path in the old runs is not)
+export FIG3D_CCRE_DIR="$FIG3D_CR_DIR/linked-ccre-new-sequence"   # outputs of 08-…/09-linked-ccre-new-sequence/
+export OCTDEG1_FASTA="$DATA_DIR/OctDegus1_genome/OctDeg1/fasta/genome.fa"   # OctDeg1.0 RefSeq genome (the minimap2 target of FIG3_PAF)
+export HOMER_BIN_DIR="/tscc/projects/ps-renlab2/jhc103/miniconda3-storage/envs/toolshed-homer/bin"   # findMotifsGenome.pl + homer2 (482 vertebrate known motifs)
+export BEDTOOLS_BIN="/tscc/projects/ps-renlab2/jhc103/miniconda3-storage/envs/toolshed-bedtools/bin/bedtools"
+export BLASTN_BIN="$TOOLSHED_DIR/blast+/ncbi-blast-2.16.0+/bin/blastn"
+export MAKEBLASTDB_BIN="$TOOLSHED_DIR/blast+/ncbi-blast-2.16.0+/bin/makeblastdb"
+export CELLRANGER_ARC_BIN="/tscc/projects/ps-renlab2/sel041/software/cellranger-arc-2.0.2/cellranger-arc"   # same version as the original runs (2.0.2)
 
 # -----------------------------------------------------------------------------
 # Figure 4: CENP-A enrichment and domain organization of degu tandem repeats

@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """
 Panel D of Figure 3 — single-cell Multiome metrics for the same four samples
-mapped to OctDeg1.0 vs OctDeg2.0 (replaces the former separate panels F and G):
+mapped to OctDeg1.0 vs OctDeg2.0 (replaces the former separate panels F and G).
+The OctDeg2.0 values come from the matched-annotation reruns (Liftoff-only reference;
+07_cellranger_arc_count_octDeg2.sh, written into data/ by 08_update_fig3d_octdeg2_metrics.py):
   top:    feature linkages detected
   bottom: median genes per cell
 Grouped bars (grey = OctDeg1.0, blue = OctDeg2.0) with one shared sample axis

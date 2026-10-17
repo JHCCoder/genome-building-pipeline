@@ -1,0 +1,6 @@
+set	linked_peaks	shared_candidates	unaligned_candidates	pct_unaligned	fully_unaligned
+181_PFC	56318	54521	1797	3.19	752
+181_dHIP	57830	56045	1785	3.09	815
+6997_dHIP	63864	61871	1993	3.12	903
+7000_PFC	32502	31281	1221	3.76	443
+union	101175	98138	3037	3.00	1488

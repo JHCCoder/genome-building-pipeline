@@ -12,7 +12,7 @@ layout merged B+C, D+E and F+G), from four data sources:
 | A | Whole-genome alignment dotplot (minimap2 `-x asm5`) | `.paf` | `01_alignment_scatterplot.py` | 110 × 95 mm |
 | B | Repetitive / non-repetitive OctDeg2.0 sequence (Gb), aligned vs not aligned to OctDeg1.0 | aligned BED × RepeatMasker | `02_repeat_overlap_barplots.py` | 58 × 95 mm |
 | C | Bulk Hi-C: cis contacts (top) and cis/trans ratio (bottom), 4 samples | `cis_trans_bhic_metrics.txt` | `03_bhic_cistrans_barplots.py` | 84 × 60 mm |
-| D | scMultiome: feature linkages (top) and median genes per cell (bottom), 4 samples | `feature_linkage.txt`, `gene_per_cell.txt` | `04_scmultiome_metric_barplots.py` | 84 × 60 mm |
+| D | scMultiome: feature linkages (top) and median genes per cell (bottom), 4 samples, matched gene models | `feature_linkage.txt`, `gene_per_cell.txt` | `04_scmultiome_metric_barplots.py` | 84 × 60 mm |
 
 Layout on the 175 mm page: A | B in the first row, C | D in the second.
 Every script draws at printed size (8 pt Helvetica/Nimbus Sans, no titles) and
@@ -53,7 +53,11 @@ per-sample summary tables are bundled in `data/`.
 
 - Bulk Hi-C (Panel C): `degu_060302`, `degu_120106`, `degu_060303`, `degu_040604`
   (shown without the `degu_` prefix).
-- scMultiome (Panel D): `181_PFC`, `181_dHIP`, `6997_dHIP`, `7000_PFC`
+- scMultiome (Panel D): `181_PFC`, `181_dHIP`, `6997_dHIP`, `7000_PFC`. OctDeg1.0 values come from
+  the original OctDeg1 runs; OctDeg2.0 values from the matched-annotation reruns
+  (`05_build_liftoff_only_gtf.py` → `06_cellranger_arc_mkref_liftoff.sh` →
+  `07_cellranger_arc_count_octDeg2.sh` → `08_update_fig3d_octdeg2_metrics.py`; libraries per
+  sample in `data/fig3d_multiome_libraries.tsv`)
   (shown with a space instead of `_`; editable via `TARGET_SAMPLES`).
 
 ## Methods notes

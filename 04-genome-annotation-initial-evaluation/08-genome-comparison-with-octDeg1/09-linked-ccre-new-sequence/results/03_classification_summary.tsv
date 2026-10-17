@@ -1,0 +1,6 @@
+set	shared	resolved_repeat	partial	new_sequence	total	pct_resolved_repeat	pct_partial	pct_new_sequence
+union	98860	39	1940	336	101175	0.04	1.92	0.33
+181_PFC	54710	16	1210	173	56109	0.03	2.16	0.31
+181_dHIP	56245	21	1171	182	57619	0.04	2.03	0.32
+6997_dHIP	62110	15	1310	196	63631	0.02	2.06	0.31
+7000_PFC	31421	8	879	112	32420	0.02	2.71	0.35
